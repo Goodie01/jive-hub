@@ -1,0 +1,1 @@
+DATABASE_JDBC=jdbc:postgresql://localhost:5433/astraeus_db?user=docker&password=docker
