@@ -1,6 +1,7 @@
 package nz.jive.hub;
 
 import io.javalin.Javalin;
+import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import org.flywaydb.core.Flyway;
 import org.jooq.Field;
 import org.jooq.RecordContext;
@@ -92,33 +93,33 @@ public class Main {
                     } else {
                         context.result("Oh no");
                     }
+
+                    OrganisationRecord organisationRecord = new OrganisationRecord();
+                    organisationRecord.attach(configuration);
+                    organisationRecord.setId("test");
+                    organisationRecord.setDisplayName("Testy mc testerson");
+                    organisationRecord.store();
                 })
                 .start(8080);
     }
 
 
     private static class InsertListener implements RecordListener {
-        private static final String CREATED_DATE_FIELD = "created_date";
-        private static final String UPDATED_DATE_FIELD = "last_updated_date";
+        private static final Field<OffsetDateTime> CREATED_DATE_FIELD = DSL.field(DSL.name("created_date"), OffsetDateTime.class);
+        private static final Field<OffsetDateTime> UPDATED_DATE_FIELD = DSL.field(DSL.name("last_updated_date"), OffsetDateTime.class);
 
         @Override
         public void insertStart(RecordContext ctx) {
-            Stream.of(ctx.record().fields()).forEach(field -> {
-                if (field.getName().equals(CREATED_DATE_FIELD)) {
-                    ctx.record().set((Field<OffsetDateTime>) field, OffsetDateTime.now());
-                } else if (field.getName().equals(UPDATED_DATE_FIELD) && !field.getDataType().nullable()) {
-                    ctx.record().set((Field<OffsetDateTime>) field, OffsetDateTime.now());
-                }
-            });
+            if (ctx.record().field(CREATED_DATE_FIELD) != null) {
+                ctx.record().set(CREATED_DATE_FIELD, OffsetDateTime.now());
+            }
         }
 
         @Override
         public void updateStart(RecordContext ctx) {
-            Stream.of(ctx.record().fields()).forEach(field -> {
-                if (field.getName().equals(UPDATED_DATE_FIELD)) {
-                    ctx.record().set((Field<OffsetDateTime>) field, OffsetDateTime.now());
-                }
-            });
+            if (ctx.record().field(UPDATED_DATE_FIELD) != null) {
+                ctx.record().set(UPDATED_DATE_FIELD, OffsetDateTime.now());
+            }
         }
     }
 }
