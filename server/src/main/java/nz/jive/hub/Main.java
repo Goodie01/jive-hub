@@ -1,6 +1,9 @@
 package nz.jive.hub;
 
 import io.javalin.Javalin;
+import java.sql.DriverManager;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import org.flywaydb.core.Flyway;
 import org.jooq.Field;
@@ -15,11 +18,6 @@ import org.jooq.meta.jaxb.Database;
 import org.jooq.meta.jaxb.Generator;
 import org.jooq.meta.jaxb.Jdbc;
 import org.jooq.meta.jaxb.Target;
-
-import java.sql.DriverManager;
-import java.time.OffsetDateTime;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * @author Goodie
@@ -66,7 +64,7 @@ public class Main {
         var flyway = Flyway.configure()
                 .cleanDisabled(false)
                 .cleanOnValidationError(true)
-                .dataSource(Configuration.DATABASE_JDBC.valueOf(),"","")
+                .dataSource(Configuration.DATABASE_JDBC.valueOf(), "", "")
                 .load();
 
         flyway.migrate();
@@ -88,7 +86,7 @@ public class Main {
 
                     Integer i = DSL.using(configuration).selectOne().fetchOne().value1();
 
-                    if(i == 1) {
+                    if (i == 1) {
                         context.result("Hello there");
                     } else {
                         context.result("Oh no");

@@ -1,10 +1,9 @@
 package nz.jive.hub;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Goodie
@@ -13,7 +12,6 @@ import java.util.Properties;
 public enum Configuration {
     DATABASE_JDBC,
     ;
-
 
     public String valueOf() {
         String propertyName = this.toString();
