@@ -6,6 +6,7 @@ package nz.jive.hub.database.generated;
 
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.Organisation;
+import nz.jive.hub.database.generated.tables.Parameters;
 import nz.jive.hub.database.generated.tables.UserAuthentication;
 import nz.jive.hub.database.generated.tables.UserDetail;
 
@@ -25,6 +26,11 @@ public class Tables {
      * The table <code>public.organisation</code>.
      */
     public static final Organisation ORGANISATION = Organisation.ORGANISATION;
+
+    /**
+     * The table <code>public.parameters</code>.
+     */
+    public static final Parameters PARAMETERS = Parameters.PARAMETERS;
 
     /**
      * The table <code>public.user_authentication</code>.

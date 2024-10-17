@@ -29,3 +29,17 @@ CREATE TABLE user_authentication
 
     CONSTRAINT userId_fk FOREIGN KEY (user_id) REFERENCES user_detail (ID) on delete cascade
 );
+
+create table parameters
+(
+    id                INT         not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    organisation_id   text        not null,
+    user_id           int,
+    parameter_name    TEXT        not null,
+    value             TEXT        not null,
+    created_date      TIMESTAMPTZ not null,
+    last_updated_date TIMESTAMPTZ,
+
+    CONSTRAINT organisationId_fk FOREIGN KEY (organisation_id) REFERENCES organisation (id) on delete cascade,
+    CONSTRAINT userId_fk FOREIGN KEY (user_id) REFERENCES user_detail (ID) on delete cascade
+);

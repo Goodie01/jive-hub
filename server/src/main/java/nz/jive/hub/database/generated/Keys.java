@@ -6,10 +6,12 @@ package nz.jive.hub.database.generated;
 
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.Organisation;
+import nz.jive.hub.database.generated.tables.Parameters;
 import nz.jive.hub.database.generated.tables.UserAuthentication;
 import nz.jive.hub.database.generated.tables.UserDetail;
 import nz.jive.hub.database.generated.tables.records.FlywaySchemaHistoryRecord;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
+import nz.jive.hub.database.generated.tables.records.ParametersRecord;
 import nz.jive.hub.database.generated.tables.records.UserAuthenticationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 
@@ -33,6 +35,7 @@ public class Keys {
 
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<OrganisationRecord> ORGANISATION_PKEY = Internal.createUniqueKey(Organisation.ORGANISATION, DSL.name("organisation_pkey"), new TableField[] { Organisation.ORGANISATION.ID }, true);
+    public static final UniqueKey<ParametersRecord> PARAMETERS_PKEY = Internal.createUniqueKey(Parameters.PARAMETERS, DSL.name("parameters_pkey"), new TableField[] { Parameters.PARAMETERS.ID }, true);
     public static final UniqueKey<UserAuthenticationRecord> USER_AUTHENTICATION_PKEY = Internal.createUniqueKey(UserAuthentication.USER_AUTHENTICATION, DSL.name("user_authentication_pkey"), new TableField[] { UserAuthentication.USER_AUTHENTICATION.ID }, true);
     public static final UniqueKey<UserDetailRecord> USER_DETAIL_PKEY = Internal.createUniqueKey(UserDetail.USER_DETAIL, DSL.name("user_detail_pkey"), new TableField[] { UserDetail.USER_DETAIL.ID }, true);
 
@@ -40,6 +43,8 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<ParametersRecord, OrganisationRecord> PARAMETERS__ORGANISATIONID_FK = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("organisationid_fk"), new TableField[] { Parameters.PARAMETERS.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
+    public static final ForeignKey<ParametersRecord, UserDetailRecord> PARAMETERS__USERID_FK = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("userid_fk"), new TableField[] { Parameters.PARAMETERS.USER_ID }, Keys.USER_DETAIL_PKEY, new TableField[] { UserDetail.USER_DETAIL.ID }, true);
     public static final ForeignKey<UserAuthenticationRecord, UserDetailRecord> USER_AUTHENTICATION__USERID_FK = Internal.createForeignKey(UserAuthentication.USER_AUTHENTICATION, DSL.name("userid_fk"), new TableField[] { UserAuthentication.USER_AUTHENTICATION.USER_ID }, Keys.USER_DETAIL_PKEY, new TableField[] { UserDetail.USER_DETAIL.ID }, true);
     public static final ForeignKey<UserDetailRecord, OrganisationRecord> USER_DETAIL__ORGANISATIONID_FK = Internal.createForeignKey(UserDetail.USER_DETAIL, DSL.name("organisationid_fk"), new TableField[] { UserDetail.USER_DETAIL.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
 }

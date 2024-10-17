@@ -12,6 +12,7 @@ import java.util.List;
 import nz.jive.hub.database.generated.Keys;
 import nz.jive.hub.database.generated.Public;
 import nz.jive.hub.database.generated.tables.Organisation.OrganisationPath;
+import nz.jive.hub.database.generated.tables.Parameters.ParametersPath;
 import nz.jive.hub.database.generated.tables.UserAuthentication.UserAuthenticationPath;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 
@@ -176,6 +177,19 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
             _organisation = new OrganisationPath(this, Keys.USER_DETAIL__ORGANISATIONID_FK, null);
 
         return _organisation;
+    }
+
+    private transient ParametersPath _parameters;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.parameters</code>
+     * table
+     */
+    public ParametersPath parameters() {
+        if (_parameters == null)
+            _parameters = new ParametersPath(this, null, Keys.PARAMETERS__USERID_FK.getInverseKey());
+
+        return _parameters;
     }
 
     private transient UserAuthenticationPath _userAuthentication;

@@ -9,6 +9,7 @@ import java.util.List;
 
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.Organisation;
+import nz.jive.hub.database.generated.tables.Parameters;
 import nz.jive.hub.database.generated.tables.UserAuthentication;
 import nz.jive.hub.database.generated.tables.UserDetail;
 
@@ -41,6 +42,11 @@ public class Public extends SchemaImpl {
     public final Organisation ORGANISATION = Organisation.ORGANISATION;
 
     /**
+     * The table <code>public.parameters</code>.
+     */
+    public final Parameters PARAMETERS = Parameters.PARAMETERS;
+
+    /**
      * The table <code>public.user_authentication</code>.
      */
     public final UserAuthentication USER_AUTHENTICATION = UserAuthentication.USER_AUTHENTICATION;
@@ -68,6 +74,7 @@ public class Public extends SchemaImpl {
         return Arrays.asList(
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Organisation.ORGANISATION,
+            Parameters.PARAMETERS,
             UserAuthentication.USER_AUTHENTICATION,
             UserDetail.USER_DETAIL
         );
