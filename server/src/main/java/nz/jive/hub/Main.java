@@ -22,55 +22,63 @@ import org.jooq.meta.jaxb.Target;
 /**
  * @author Goodie
  */
-public class Main {
-    public static void main(String[] args) throws Exception {
-        if (args.length == 1 && Objects.equals(args[0], "server")) {
+public class Main
+{
+    public static void main(String[] args) throws Exception
+    {
+        if (args.length == 1 && Objects.equals(args[0], "server"))
+        {
             migrate();
             run();
-        } else if (args.length == 1 && Objects.equals(args[0], "db:generate")) {
+        } else if (args.length == 1 && Objects.equals(args[0], "db:generate"))
+        {
             migrate();
             generate();
-        } else {
+        } else
+        {
             System.err.println("Please select a valid argument ('server', 'db:generate')");
             System.exit(1);
         }
     }
 
-    private static void generate() throws Exception {
+    private static void generate() throws Exception
+    {
         org.jooq.meta.jaxb.Configuration configuration = new org.jooq.meta.jaxb.Configuration()
 
-                // Configure the database connection here
-                .withJdbc(new Jdbc()
-                        .withDriver("org.postgresql.Driver")
-                        .withUrl(Configuration.DATABASE_JDBC.valueOf())
-                )
-                .withGenerator(new Generator()
-                        .withDatabase(new Database()
-                                .withName("org.jooq.meta.postgres.PostgresDatabase")
-                                .withIncludes(".*")
-                                .withInputSchema("public")
-                        )
-                        .withTarget(new Target()
-                                .withPackageName("nz.jive.hub.database.generated")
-                                .withDirectory("\\src\\main\\java")
-                        )
-                );
+        // Configure the database connection here
+        .withJdbc(new Jdbc()
+        .withDriver("org.postgresql.Driver")
+        .withUrl(Configuration.DATABASE_JDBC.valueOf())
+        )
+        .withGenerator(new Generator()
+        .withDatabase(new Database()
+        .withName("org.jooq.meta.postgres.PostgresDatabase")
+        .withIncludes(".*")
+        .withInputSchema("public")
+        )
+        .withTarget(new Target()
+        .withPackageName("nz.jive.hub.database.generated")
+        .withDirectory("\\src\\main\\java")
+        )
+        );
 
 
         GenerationTool.generate(configuration);
     }
 
-    private static void migrate() {
+    private static void migrate()
+    {
         var flyway = Flyway.configure()
-                .cleanDisabled(false)
-                .cleanOnValidationError(true)
-                .dataSource(Configuration.DATABASE_JDBC.valueOf(), "", "")
-                .load();
+        .cleanDisabled(false)
+        .cleanOnValidationError(true)
+        .dataSource(Configuration.DATABASE_JDBC.valueOf(), "", "")
+        .load();
 
         flyway.migrate();
     }
 
-    private static void run() {
+    private static void run()
+    {
         System.out.println("Hello World");
         Javalin.create(javalinConfig -> {
         })
@@ -80,15 +88,17 @@ public class Main {
 
             var connection = DriverManager.getConnection(Configuration.DATABASE_JDBC.valueOf());
             var configuration = new DefaultConfiguration()
-                    .set(connection)
-                    .set(SQLDialect.POSTGRES)
-                    .set(new DefaultRecordListenerProvider(new InsertListener()));
+            .set(connection)
+            .set(SQLDialect.POSTGRES)
+            .set(new DefaultRecordListenerProvider(new InsertListener()));
 
             Integer i = DSL.using(configuration).selectOne().fetchOne().value1();
 
-            if (i == 1) {
+            if (i == 1)
+            {
                 context.result("Hello there");
-            } else {
+            } else
+            {
                 context.result("Oh no");
             }
 
@@ -102,20 +112,25 @@ public class Main {
     }
 
 
-    private static class InsertListener implements RecordListener {
+    private static class InsertListener implements RecordListener
+    {
         private static final Field<OffsetDateTime> CREATED_DATE_FIELD = DSL.field(DSL.name("created_date"), OffsetDateTime.class);
         private static final Field<OffsetDateTime> UPDATED_DATE_FIELD = DSL.field(DSL.name("last_updated_date"), OffsetDateTime.class);
 
         @Override
-        public void insertStart(RecordContext ctx) {
-            if (ctx.record().field(CREATED_DATE_FIELD) != null) {
+        public void insertStart(RecordContext ctx)
+        {
+            if (ctx.record().field(CREATED_DATE_FIELD) != null)
+            {
                 ctx.record().set(CREATED_DATE_FIELD, OffsetDateTime.now());
             }
         }
 
         @Override
-        public void updateStart(RecordContext ctx) {
-            if (ctx.record().field(UPDATED_DATE_FIELD) != null) {
+        public void updateStart(RecordContext ctx)
+        {
+            if (ctx.record().field(UPDATED_DATE_FIELD) != null)
+            {
                 ctx.record().set(UPDATED_DATE_FIELD, OffsetDateTime.now());
             }
         }
