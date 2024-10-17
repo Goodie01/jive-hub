@@ -73,32 +73,32 @@ public class Main {
     private static void run() {
         System.out.println("Hello World");
         Javalin.create(javalinConfig -> {
-                })
-                .get("health", context -> {
-                    System.setProperty("org.jooq.no-logo", "true");
-                    System.setProperty("org.jooq.no-tips", "true");
+        })
+        .get("health", context -> {
+            System.setProperty("org.jooq.no-logo", "true");
+            System.setProperty("org.jooq.no-tips", "true");
 
-                    var connection = DriverManager.getConnection(Configuration.DATABASE_JDBC.valueOf());
-                    var configuration = new DefaultConfiguration()
-                            .set(connection)
-                            .set(SQLDialect.POSTGRES)
-                            .set(new DefaultRecordListenerProvider(new InsertListener()));
+            var connection = DriverManager.getConnection(Configuration.DATABASE_JDBC.valueOf());
+            var configuration = new DefaultConfiguration()
+                    .set(connection)
+                    .set(SQLDialect.POSTGRES)
+                    .set(new DefaultRecordListenerProvider(new InsertListener()));
 
-                    Integer i = DSL.using(configuration).selectOne().fetchOne().value1();
+            Integer i = DSL.using(configuration).selectOne().fetchOne().value1();
 
-                    if (i == 1) {
-                        context.result("Hello there");
-                    } else {
-                        context.result("Oh no");
-                    }
+            if (i == 1) {
+                context.result("Hello there");
+            } else {
+                context.result("Oh no");
+            }
 
-                    OrganisationRecord organisationRecord = new OrganisationRecord();
-                    organisationRecord.attach(configuration);
-                    organisationRecord.setId("test");
-                    organisationRecord.setDisplayName("Testy mc testerson");
-                    organisationRecord.store();
-                })
-                .start(8080);
+            OrganisationRecord organisationRecord = new OrganisationRecord();
+            organisationRecord.attach(configuration);
+            organisationRecord.setId("test");
+            organisationRecord.setDisplayName("Testy mc testerson");
+            organisationRecord.store();
+        })
+        .start(8080);
     }
 
 
