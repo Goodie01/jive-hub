@@ -66,13 +66,6 @@ public class Main {
         parametersRecord.setValue("1");
         parametersRecord.store();
 
-        parametersRecord.setParameterName("Hello there");
-        parametersRecord.setValue("This is a value");
-        parametersRecord.store();
-
-        parametersRecord.setParameterName("General Kenobi");
-        parametersRecord.store();
-
         Javalin
             .create(javalinConfig -> {
                 javalinConfig.useVirtualThreads = true;

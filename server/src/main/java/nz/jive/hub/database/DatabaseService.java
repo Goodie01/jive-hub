@@ -48,10 +48,8 @@ public class DatabaseService {
         @Override
         public void insertStart(RecordContext ctx) {
             Record record = ctx.record();
-            if (record
-                .field(CREATED_DATE_FIELD) != null) {
-                record
-                    .set(CREATED_DATE_FIELD, OffsetDateTime.now());
+            if (record.field(CREATED_DATE_FIELD) != null) {
+                record.set(CREATED_DATE_FIELD, OffsetDateTime.now());
             }
 
             if (record instanceof TableRecordImpl<?> tableRecord) {
@@ -67,12 +65,9 @@ public class DatabaseService {
 
         @Override
         public void updateStart(RecordContext ctx) {
-            Record record = ctx
-                .record();
-            if (record
-                .field(UPDATED_DATE_FIELD) != null) {
-                record
-                    .set(UPDATED_DATE_FIELD, OffsetDateTime.now());
+            Record record = ctx.record();
+            if (record.field(UPDATED_DATE_FIELD) != null) {
+                record.set(UPDATED_DATE_FIELD, OffsetDateTime.now());
             }
 
             if(record.changed()) {
