@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Goodie
  */
 
-public enum Configuration {
+public enum JiveConfiguration {
     DATABASE_JDBC,
     ;
 
