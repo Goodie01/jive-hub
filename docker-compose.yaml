@@ -1,6 +1,13 @@
 version: '3.1'
 
 services:
+  nginx:
+    image: nginx:1.27.2
+    ports:
+      - '80:80'
+    volumes:
+      - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
+      #- './docker/logs/:/var/logs/nginx'
   postgres:
     image: postgres:16.2
     environment:
