@@ -53,6 +53,16 @@ public class DatabaseService {
                 record
                     .set(CREATED_DATE_FIELD, OffsetDateTime.now());
             }
+
+            if (record instanceof TableRecordImpl<?> tableRecord) {
+                System.out.println("New Record => " + tableRecord.getTable().getName() + " (" + record.get("id") + ")");
+            } else {
+                System.out.println("Weird new record => " + record.get("id"));
+            }
+
+            for (Field<?> field : record.fields()) {
+                System.out.println("field: \"" + field.getName() + "\" value: \"" + field.getValue(record) + "\"");
+            }
         }
 
         @Override
@@ -73,9 +83,8 @@ public class DatabaseService {
                 }
 
                 for (Field<?> field : record.fields()) {
-                    boolean changed = field.changed(record);
-                    if(changed) {
-                        System.out.println("field: " + field.getName() + " value: " + field.original(record) + " => " + field.getValue(record));
+                    if(field.changed(record)) {
+                        System.out.println("field: \"" + field.getName() + "\" value: \"" + field.original(record) + "\" => \"" + field.getValue(record) + "\"");
                     }
                 }
             }

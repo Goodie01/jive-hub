@@ -67,6 +67,10 @@ public class Main {
         parametersRecord.store();
 
         parametersRecord.setParameterName("Hello there");
+        parametersRecord.setValue("This is a value");
+        parametersRecord.store();
+
+        parametersRecord.setParameterName("General Kenobi");
         parametersRecord.store();
 
         Javalin
