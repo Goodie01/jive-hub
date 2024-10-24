@@ -4,7 +4,8 @@ package nz.jive.hub;
  * @author thomas.goodwin
  */
 public class Parameter<T> {
-    public static Parameter<Boolean> SCHOOL_PUBLIC_WEBSITE_ACCESS = new Parameter<>("school.public.website.access", Boolean.class, true);
+    public static Parameter<Boolean> SCHOOL_ENABLED = new Parameter<>("school.enabled", Boolean.class, true);
+    public static Parameter<Boolean> EVENT_ENABLED = new Parameter<>("event.enabled", Boolean.class, true);
 
     private final String name;
     private final Class<T> tClass;
