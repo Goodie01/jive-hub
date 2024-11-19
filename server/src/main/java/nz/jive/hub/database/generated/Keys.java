@@ -39,7 +39,8 @@ public class Keys {
 
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<OrganisationRecord> ORGANISATION_PKEY = Internal.createUniqueKey(Organisation.ORGANISATION, DSL.name("organisation_pkey"), new TableField[] { Organisation.ORGANISATION.ID }, true);
-    public static final UniqueKey<PageRecord> PAGE_PKEY = Internal.createUniqueKey(Page.PAGE, DSL.name("page_pkey"), new TableField[] { Page.PAGE.PATH, Page.PAGE.ORGANISATION_ID }, true);
+    public static final UniqueKey<PageRecord> PAGE_ORGANISATION_ID_MENUNAME_KEY = Internal.createUniqueKey(Page.PAGE, DSL.name("page_organisation_id_menuname_key"), new TableField[] { Page.PAGE.ORGANISATION_ID, Page.PAGE.MENUNAME }, true);
+    public static final UniqueKey<PageRecord> PAGE_PKEY = Internal.createUniqueKey(Page.PAGE, DSL.name("page_pkey"), new TableField[] { Page.PAGE.ORGANISATION_ID, Page.PAGE.PATH }, true);
     public static final UniqueKey<ParametersRecord> PARAMETERS_ORGANISATION_ID_USER_ID_PARAMETER_NAME_KEY = Internal.createUniqueKey(Parameters.PARAMETERS, DSL.name("parameters_organisation_id_user_id_parameter_name_key"), new TableField[] { Parameters.PARAMETERS.ORGANISATION_ID, Parameters.PARAMETERS.USER_ID, Parameters.PARAMETERS.PARAMETER_NAME }, true);
     public static final UniqueKey<ParametersRecord> PARAMETERS_PKEY = Internal.createUniqueKey(Parameters.PARAMETERS, DSL.name("parameters_pkey"), new TableField[] { Parameters.PARAMETERS.ID }, true);
     public static final UniqueKey<RoleRecord> ROLE_PKEY = Internal.createUniqueKey(Role.ROLE, DSL.name("role_pkey"), new TableField[] { Role.ROLE.ORGANISATION_ID, Role.ROLE.NAME }, true);

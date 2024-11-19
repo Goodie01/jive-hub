@@ -1,19 +1,16 @@
 package nz.jive.hub.facade;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
 import nz.jive.hub.Parameter;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
-import nz.jive.hub.service.OrganisationService;
-import nz.jive.hub.service.PageService;
-import nz.jive.hub.service.ParameterStoreService;
-import nz.jive.hub.service.SecurityService;
-import nz.jive.hub.service.UserService;
+import nz.jive.hub.service.*;
 import nz.jive.hub.service.parameters.ParameterMap;
 import nz.jive.hub.service.security.Policy;
 import nz.jive.hub.service.security.Statement;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @author thomas.goodwin
@@ -44,22 +41,21 @@ public class OrganisationFacade {
                                    final String email) {
 
         if (!DISPLAY_NAME_VALIDATOR
-            .matcher(orgDisplayName)
-            .matches()) {
+                .matcher(orgDisplayName)
+                .matches()) {
             throw new IllegalArgumentException(orgDisplayName + " is not a valid display name");
         }
 
         OrganisationRecord organisation = organisationService.createOrganisation(orgDisplayName);
 
         pageService.save(
-            "",
-            """
-                # #orgName
-                This is your Jive Hub home page!
-                """.replace("#orgName", orgDisplayName),
-            orgDisplayName + " - Home",
-            organisation.getId()
-        );
+                organisation.getId(), "",
+                """
+                        # #orgName
+                        This is your Jive Hub home page!
+                        """.replace("#orgName", orgDisplayName),
+                orgDisplayName + " - Home",
+                "Home", 0);
 
         UserDetailRecord userDetailRecord = userService.create(userName, userPreferredName, email, organisation.getId());
 
@@ -67,8 +63,8 @@ public class OrganisationFacade {
         ParameterMap organizationParameters = parameterStoreService.getOrganizationParameters(organisation.getId());
 
         String slug = orgDisplayName
-            .replace(' ', '_')
-            .toLowerCase(Locale.ENGLISH);
+                .replace(' ', '_')
+                .toLowerCase(Locale.ENGLISH);
         organizationParameters.set(Parameter.ORGANISATION_HOSTS, List.of(slug + '.' + systemParameters.stringVal(Parameter.SYSTEM_HOST)));
 
         Policy adminRole = securityService.save(organisation.getId(), Policy.of("Admin", Statement.allow("*", "*")));

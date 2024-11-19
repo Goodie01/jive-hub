@@ -74,12 +74,40 @@ public class PageRecord extends UpdatableRecordImpl<PageRecord> {
         return (Integer) get(3);
     }
 
+    /**
+     * Setter for <code>public.page.menuname</code>.
+     */
+    public void setMenuname(String value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.page.menuname</code>.
+     */
+    public String getMenuname() {
+        return (String) get(4);
+    }
+
+    /**
+     * Setter for <code>public.page.menuorder</code>.
+     */
+    public void setMenuorder(Short value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.page.menuorder</code>.
+     */
+    public Short getMenuorder() {
+        return (Short) get(5);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
 
     @Override
-    public Record2<String, Integer> key() {
+    public Record2<Integer, String> key() {
         return (Record2) super.key();
     }
 
@@ -97,13 +125,15 @@ public class PageRecord extends UpdatableRecordImpl<PageRecord> {
     /**
      * Create a detached, initialised PageRecord
      */
-    public PageRecord(String path, String title, String content, Integer organisationId) {
+    public PageRecord(String path, String title, String content, Integer organisationId, String menuname, Short menuorder) {
         super(Page.PAGE);
 
         setPath(path);
         setTitle(title);
         setContent(content);
         setOrganisationId(organisationId);
+        setMenuname(menuname);
+        setMenuorder(menuorder);
         resetChangedOnNotNull();
     }
 }

@@ -76,6 +76,16 @@ public class Page extends TableImpl<PageRecord> {
      */
     public final TableField<PageRecord, Integer> ORGANISATION_ID = createField(DSL.name("organisation_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column <code>public.page.menuname</code>.
+     */
+    public final TableField<PageRecord, String> MENUNAME = createField(DSL.name("menuname"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.page.menuorder</code>.
+     */
+    public final TableField<PageRecord, Short> MENUORDER = createField(DSL.name("menuorder"), SQLDataType.SMALLINT, this, "");
+
     private Page(Name alias, Table<PageRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
@@ -146,6 +156,11 @@ public class Page extends TableImpl<PageRecord> {
     @Override
     public UniqueKey<PageRecord> getPrimaryKey() {
         return Keys.PAGE_PKEY;
+    }
+
+    @Override
+    public List<UniqueKey<PageRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.PAGE_ORGANISATION_ID_MENUNAME_KEY);
     }
 
     @Override

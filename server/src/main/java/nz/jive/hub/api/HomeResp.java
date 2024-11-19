@@ -1,9 +1,7 @@
 package nz.jive.hub.api;
 
-import java.util.List;
-
 /**
  * @author Goodie
  */
-public record HomeResp(String displayName, List<MenuItem> menuItems) {
+public record HomeResp(String displayName, java.util.SortedSet<MenuItem> menuItems) {
 }

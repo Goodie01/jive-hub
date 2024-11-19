@@ -3,7 +3,6 @@ package nz.jive.hub.handlers;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import nz.jive.hub.api.PageResp;
-import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.PageRecord;
 import nz.jive.hub.service.PageService;
@@ -31,7 +30,7 @@ public class PagesHandler implements Handler {
         String pageId = extractPageId(ctx);
 
         PageRecord pageRecord = pageService
-            .find(pageId, organisation.getId())
+            .find(organisation.getId(), pageId)
             .orElseThrow();
 
         ctx.json(new PageResp(pageRecord.getContent(), pageRecord.getTitle()));

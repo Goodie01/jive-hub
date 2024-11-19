@@ -61,6 +61,9 @@ create table page
     title           text not null,
     content         text not null,
     organisation_id int references organisation (id) on update cascade on delete cascade,
+    menuName        text,
+    menuOrder       smallint,
 
-    primary key (path, organisation_id)
+    primary key (organisation_id, path),
+    unique (organisation_id, menuName)
 )
