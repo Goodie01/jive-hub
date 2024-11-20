@@ -12,21 +12,17 @@ import org.jooq.impl.DSL;
 public class HealthCheckHandler implements Handler {
     private final DatabaseService databaseService;
 
-    public static HealthCheckHandler create(final DatabaseService databaseService) {
-        return new HealthCheckHandler(databaseService);
-    }
-
-    private HealthCheckHandler(DatabaseService databaseService) {
+    public HealthCheckHandler(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
         Integer i = DSL
-            .using(databaseService.getConfiguration())
-            .selectOne()
-            .fetchOne()
-            .value1();
+                .using(databaseService.getConfiguration())
+                .selectOne()
+                .fetchOne()
+                .value1();
 
         if (i == 1) {
             ctx.result("OK");

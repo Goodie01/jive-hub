@@ -19,8 +19,10 @@ import remarkRehype from 'remark-rehype'
 export class AppComponent {
 
   constructor(private apiService: ApiService, private titleService:Title) {
-    apiService.pageResponse().subscribe(value => {
-
+    apiService.homeResponse().subscribe(value => {
+      console.dir(value)
+    })
+    apiService.pageResponse("home").subscribe(value => {
       unified()
           .use(remarkParse)
           .use(remarkFrontmatter)

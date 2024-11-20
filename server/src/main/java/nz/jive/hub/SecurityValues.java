@@ -1,0 +1,10 @@
+package nz.jive.hub;
+
+/**
+ * @author Goodie
+ */
+public class SecurityValues {
+    public static String ADMIN_VIEW = "admin.view";
+    public static String SCHOOL_MANAGE_VIEW = "school.manage.view";
+    public static String EVENT_MANAGE_VIEW = "event.manage.view";
+}

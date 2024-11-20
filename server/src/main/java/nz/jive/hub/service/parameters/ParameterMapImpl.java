@@ -3,13 +3,14 @@ package nz.jive.hub.service.parameters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
-import nz.jive.hub.Parameter;
+import nz.jive.hub.Parameters;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Configuration;
 import org.jooq.impl.DSL;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.Map;
 
 import static nz.jive.hub.database.generated.Tables.PARAMETERS;
 
@@ -33,55 +34,61 @@ public class ParameterMapImpl implements ParameterMap {
     }
 
     @Override
-    public String stringVal(Parameter tParameter) {
+    public String stringVal(Parameters tParameter) {
         return parameters.getOrDefault(tParameter.getName(), tParameter.getDefaultValue());
     }
 
     @Override
-    public List<String> stringListVal(Parameter tParameter) {
+    public boolean boolVal(Parameters tParameter) {
         String orDefault = parameters.getOrDefault(tParameter.getName(), tParameter.getDefaultValue());
-        return readValue(orDefault);
+        return Boolean.parseBoolean(orDefault);
     }
 
     @Override
-    public void set(Parameter tParameter, String value) {
+    public List<String> stringListVal(Parameters tParameter) {
+        String orDefault = parameters.getOrDefault(tParameter.getName(), tParameter.getDefaultValue());
+        return readListValue(orDefault);
+    }
+
+    @Override
+    public void set(Parameters tParameter, String value) {
         setInternal(tParameter, value);
     }
 
-    public void set(Parameter tParameter, List<Object> values) {
+    public void set(Parameters tParameter, List<Object> values) {
         String s = getWriteValueAsString(values);
         setInternal(tParameter, s);
     }
 
 
-    private void setInternal(Parameter tParameter, String value) {
+    private void setInternal(Parameters tParameter, String value) {
         if (StringUtils.equals(value, tParameter.getDefaultValue()) && parameters.get(tParameter.getName()) != null) {
             DSL
-                .using(configuration)
-                .deleteFrom(PARAMETERS)
-                .where(PARAMETERS.USER_ID
-                    .eq(userId)
-                    .or(DSL
-                        .val(userId)
-                        .isNull())
-                    .and(PARAMETERS.ORGANISATION_ID
-                        .eq(organisationId)
-                        .or(DSL
-                            .val(organisationId)
-                            .isNull()))
-                    .and(PARAMETERS.PARAMETER_NAME.eq(tParameter.getName())))
-                .execute();
+                    .using(configuration)
+                    .deleteFrom(PARAMETERS)
+                    .where(PARAMETERS.USER_ID
+                            .eq(userId)
+                            .or(DSL
+                                    .val(userId)
+                                    .isNull())
+                            .and(PARAMETERS.ORGANISATION_ID
+                                    .eq(organisationId)
+                                    .or(DSL
+                                            .val(organisationId)
+                                            .isNull()))
+                            .and(PARAMETERS.PARAMETER_NAME.eq(tParameter.getName())))
+                    .execute();
             parameters.remove(tParameter.getName());
         } else if (!StringUtils.equals(value, tParameter.getDefaultValue())) {
             DSL
-                .using(configuration)
-                .insertInto(PARAMETERS)
-                .columns(PARAMETERS.PARAMETER_NAME, PARAMETERS.VALUE, PARAMETERS.ORGANISATION_ID, PARAMETERS.USER_ID, PARAMETERS.CREATED_DATE)
-                .values(tParameter.getName(), value, organisationId, userId, OffsetDateTime.now())
-                .onDuplicateKeyUpdate()
-                .set(PARAMETERS.VALUE, value)
-                .set(PARAMETERS.LAST_UPDATED_DATE, OffsetDateTime.now())
-                .execute();
+                    .using(configuration)
+                    .insertInto(PARAMETERS)
+                    .columns(PARAMETERS.PARAMETER_NAME, PARAMETERS.VALUE, PARAMETERS.ORGANISATION_ID, PARAMETERS.USER_ID, PARAMETERS.CREATED_DATE)
+                    .values(tParameter.getName(), value, organisationId, userId, OffsetDateTime.now())
+                    .onDuplicateKeyUpdate()
+                    .set(PARAMETERS.VALUE, value)
+                    .set(PARAMETERS.LAST_UPDATED_DATE, OffsetDateTime.now())
+                    .execute();
             parameters.put(tParameter.getName(), value);
         }
     }
@@ -94,7 +101,7 @@ public class ParameterMapImpl implements ParameterMap {
         }
     }
 
-    private List<String> readValue(String orDefault) {
+    private List<String> readListValue(String orDefault) {
         try {
             return objectMapper.readValue(orDefault, new TypeReference<List<String>>() {
             });

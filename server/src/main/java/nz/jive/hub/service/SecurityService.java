@@ -3,7 +3,6 @@ package nz.jive.hub.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Set;
 import nz.jive.hub.database.generated.tables.records.RoleRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.database.generated.tables.records.UserHasRoleRecord;
@@ -12,6 +11,8 @@ import nz.jive.hub.service.security.Statement;
 import org.jooq.Configuration;
 import org.jooq.impl.DSL;
 
+import java.util.Set;
+
 import static nz.jive.hub.database.generated.Tables.ROLE;
 import static nz.jive.hub.database.generated.Tables.USER_HAS_ROLE;
 
@@ -19,7 +20,7 @@ import static nz.jive.hub.database.generated.Tables.USER_HAS_ROLE;
  * @author Goodie
  */
 public class SecurityService {
-    private static final Policy DENY_ALL = Policy.of("Default", Statement.deny("*", "*;"));
+    private static final Policy DENY_ALL = Policy.of("Default", Statement.deny("*", "*"));
     private final Configuration configuration;
     private final ObjectMapper objectMapper;
 
@@ -67,18 +68,18 @@ public class SecurityService {
 
     public Policy getCombinedRoleForUser(UserDetailRecord userDetailRecord) {
         return DSL
-            .using(configuration)
-            .selectFrom(ROLE)
-            .where(ROLE.NAME.in(
-                DSL
-                    .select(USER_HAS_ROLE.ROLE_NAME)
-                    .from(USER_HAS_ROLE)
-                    .where(USER_HAS_ROLE.USER_ID.eq(userDetailRecord.getId()))
-                    .and(USER_HAS_ROLE.ORGANISATION_ID.eq(userDetailRecord.getOrganisationId()))
-            ))
-            .stream()
-            .map(roleRecord -> new Policy(roleRecord.getName(), getPolicyStatements(roleRecord.getPolicy())))
-            .reduce(Policy::join)
-            .orElse(DENY_ALL);
+                .using(configuration)
+                .selectFrom(ROLE)
+                .where(ROLE.NAME.in(
+                        DSL
+                                .select(USER_HAS_ROLE.ROLE_NAME)
+                                .from(USER_HAS_ROLE)
+                                .where(USER_HAS_ROLE.USER_ID.eq(userDetailRecord.getId()))
+                                .and(USER_HAS_ROLE.ORGANISATION_ID.eq(userDetailRecord.getOrganisationId()))
+                ))
+                .stream()
+                .map(roleRecord -> new Policy(roleRecord.getName(), getPolicyStatements(roleRecord.getPolicy())))
+                .reduce(Policy::join)
+                .orElse(DENY_ALL);
     }
 }

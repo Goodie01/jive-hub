@@ -19,10 +19,6 @@ public class PagesHandler implements Handler {
         this.pageService = pageService;
     }
 
-    public static PagesHandler create(final PageService pageService) {
-        return new PagesHandler(pageService);
-    }
-
     @Override
     public void handle(@NotNull Context ctx) throws Exception {
         //Object o = ctx.bodyAsClass(Object.class);
@@ -30,8 +26,8 @@ public class PagesHandler implements Handler {
         String pageId = extractPageId(ctx);
 
         PageRecord pageRecord = pageService
-            .find(organisation.getId(), pageId)
-            .orElseThrow();
+                .find(organisation.getId(), pageId)
+                .orElseThrow();
 
         ctx.json(new PageResp(pageRecord.getContent(), pageRecord.getTitle()));
     }

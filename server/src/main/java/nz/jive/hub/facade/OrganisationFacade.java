@@ -1,6 +1,6 @@
 package nz.jive.hub.facade;
 
-import nz.jive.hub.Parameter;
+import nz.jive.hub.Parameters;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.service.*;
@@ -65,7 +65,7 @@ public class OrganisationFacade {
         String slug = orgDisplayName
                 .replace(' ', '_')
                 .toLowerCase(Locale.ENGLISH);
-        organizationParameters.set(Parameter.ORGANISATION_HOSTS, List.of(slug + '.' + systemParameters.stringVal(Parameter.SYSTEM_HOST)));
+        organizationParameters.set(Parameters.ORGANISATION_HOSTS, List.of(slug + '.' + systemParameters.stringVal(Parameters.SYSTEM_HOST)));
 
         Policy adminRole = securityService.save(organisation.getId(), Policy.of("Admin", Statement.allow("*", "*")));
         securityService.assignRole(userDetailRecord, adminRole);

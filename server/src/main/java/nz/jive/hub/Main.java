@@ -91,7 +91,7 @@ public class Main {
                             .select(PARAMETERS.ORGANISATION_ID)
                             .from(PARAMETERS)
                             .where(PARAMETERS.VALUE.contains(host))
-                            .and(PARAMETERS.PARAMETER_NAME.eq(Parameter.ORGANISATION_HOSTS.getName()))
+                            .and(PARAMETERS.PARAMETER_NAME.eq(Parameters.ORGANISATION_HOSTS.getName()))
                             .fetchOptionalInto(Integer.class)
                             .ifPresent(id -> {
                                 OrganisationRecord test = DSL
@@ -116,9 +116,9 @@ public class Main {
                                 }
                             });
                 })
-                .addHttpHandler(HandlerType.GET, "api/health", HealthCheckHandler.create(databaseService))
-                .addHttpHandler(HandlerType.GET, "api/v1/home", HomeHandler.create(databaseService, securityValidationService, pageService))
-                .addHttpHandler(HandlerType.GET, "api/v1/pages/*", PagesHandler.create(pageService))
+                .addHttpHandler(HandlerType.GET, "api/health", new HealthCheckHandler(databaseService))
+                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(databaseService, securityValidationService, pageService, parameterStoreService))
+                .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageService))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }
 }

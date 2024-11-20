@@ -10,8 +10,12 @@ export class ApiService {
     constructor(private http: HttpClient) {
     }
 
-    pageResponse(): Observable<PageResp> {
-        return this.http.get<PageResp>("api/v1/pages/", this.generateHttpOptions());
+    pageResponse(url: String): Observable<PageResp> {
+        return this.http.get<PageResp>("api/v1/pages/" + url, this.generateHttpOptions());
+    }
+
+    homeResponse(): Observable<PageResp> {
+        return this.http.get<PageResp>("api/v1/home", this.generateHttpOptions());
     }
 
     private generateHttpOptions() {

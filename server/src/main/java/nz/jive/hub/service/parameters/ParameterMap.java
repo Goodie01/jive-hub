@@ -1,19 +1,22 @@
 package nz.jive.hub.service.parameters;
 
+import nz.jive.hub.Parameters;
+
 import java.util.List;
-import nz.jive.hub.Parameter;
 
 /**
  * @author Goodie
  */
 public interface ParameterMap {
-    String stringVal(Parameter tParameter);
+    String stringVal(Parameters tParameter);
+
+    boolean boolVal(Parameters tParameter);
 //    boolean booleanVal(Parameter tParameter);
 //    int intVal(Parameter tParameter);
 
-    List<String> stringListVal(Parameter tParameter);
+    List<String> stringListVal(Parameters tParameter);
 
-    void set(Parameter tParameter, String value);
+    void set(Parameters tParameter, String value);
 
-    void set(Parameter tParameter, List<Object> value);
+    void set(Parameters tParameter, List<Object> value);
 }
