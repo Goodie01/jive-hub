@@ -6,21 +6,18 @@ import io.javalin.http.HandlerType;
 import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
-import nz.jive.hub.database.generated.Tables;
-import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.facade.OrganisationFacade;
 import nz.jive.hub.handlers.HealthCheckHandler;
 import nz.jive.hub.handlers.HomeHandler;
+import nz.jive.hub.handlers.LoginHandler;
 import nz.jive.hub.handlers.PagesHandler;
 import nz.jive.hub.service.*;
-import nz.jive.hub.service.security.Policy;
-import org.jooq.Configuration;
 import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static nz.jive.hub.database.generated.Tables.*;
+import static nz.jive.hub.database.generated.Tables.ORGANISATION;
 
 /**
  * @author Goodie
@@ -40,13 +37,13 @@ public class Main {
     }
 
     private static void run() throws SQLException {
-        System.out.println("Hello World");
         final ObjectMapper objectMapper = new ObjectMapper();
         DatabaseService databaseService = new DatabaseService();
         OrganisationService organisationService = new OrganisationService(databaseService.getConfiguration());
         PageService pageService = new PageService(databaseService.getConfiguration());
         ParameterStoreService parameterStoreService = new ParameterStoreService(databaseService.getConfiguration(), objectMapper);
         UserService userService = new UserService(databaseService.getConfiguration());
+        UserSessionService userSessionService = new UserSessionService(databaseService.getConfiguration());
         SecurityService securityService = new SecurityService(databaseService.getConfiguration(), objectMapper);
         SecurityValidationService securityValidationService = new SecurityValidationService();
 
@@ -62,14 +59,6 @@ public class Main {
                 .using(databaseService.getConfiguration())
                 .deleteFrom(ORGANISATION)
                 .execute();
-        DSL
-                .using(databaseService.getConfiguration())
-                .deleteFrom(Tables.USER_DETAIL)
-                .execute();
-        DSL
-                .using(databaseService.getConfiguration())
-                .deleteFrom(Tables.PARAMETERS)
-                .execute();
 
         organisationFacade.createOrganisation("Test",
                 "Thomas Goodwin",
@@ -82,42 +71,10 @@ public class Main {
                     javalinConfig.useVirtualThreads = true;
                     javalinConfig.showJavalinBanner = false;
                 })
-                .before(ctx -> {
-                    String host = ctx.header("host");
-                    Configuration configuration = databaseService.getConfiguration();
-
-                    DSL
-                            .using(configuration)
-                            .select(PARAMETERS.ORGANISATION_ID)
-                            .from(PARAMETERS)
-                            .where(PARAMETERS.VALUE.contains(host))
-                            .and(PARAMETERS.PARAMETER_NAME.eq(Parameters.ORGANISATION_HOSTS.getName()))
-                            .fetchOptionalInto(Integer.class)
-                            .ifPresent(id -> {
-                                OrganisationRecord test = DSL
-                                        .using(configuration)
-                                        .selectFrom(ORGANISATION)
-                                        .where(ORGANISATION.ID.equal(id))
-                                        .fetchOne();
-                                ctx.attribute("organisation", test);
-
-                                if (test != null) {
-                                    DSL
-                                            .using(configuration)
-                                            .selectFrom(USER_DETAIL)
-                                            .where(USER_DETAIL.ORGANISATION_ID.equal(test.getId()))
-                                            .fetchOptional()
-                                            .ifPresent(userDetailRecord -> {
-                                                ctx.attribute("user", userDetailRecord);
-
-                                                Policy combinedRoleForUser = securityService.getCombinedRoleForUser(userDetailRecord);
-                                                ctx.attribute("userPolicy", combinedRoleForUser);
-                                            });
-                                }
-                            });
-                })
+                .before(ctx -> Server.setup(ctx, databaseService, securityService))
                 .addHttpHandler(HandlerType.GET, "api/health", new HealthCheckHandler(databaseService))
-                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(databaseService, securityValidationService, pageService, parameterStoreService))
+                .addHttpHandler(HandlerType.GET, "api/v1/login", new LoginHandler(userService, userSessionService))
+                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(securityValidationService, pageService, parameterStoreService))
                 .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageService))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }

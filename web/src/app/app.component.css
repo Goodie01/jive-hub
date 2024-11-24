@@ -1,0 +1,32 @@
+.menu {
+  grid-area: menu;
+  font-size: 1.2rem;
+}
+.main {
+  grid-area: main;
+  vertical-align: top;
+  font-size: 1rem;
+}
+.footer {
+  grid-area: footer;
+  text-align: center;
+  font-size: 0.8rem;
+}
+.login {
+  grid-area: login;
+  text-align: right;
+  font-size: 1rem;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'menu main main main main login'
+    'footer footer footer footer footer footer';
+  gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  padding: 10px;
+}

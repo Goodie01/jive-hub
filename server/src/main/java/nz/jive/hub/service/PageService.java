@@ -39,13 +39,13 @@ public class PageService {
 
     public Set<MenuItem> findMenuPages(final int organisationId) {
         return DSL.using(configuration)
-                .select(PAGE.MENUNAME, PAGE.PATH)
+                .select(PAGE.MENUNAME, PAGE.PATH, PAGE.MENUORDER)
                 .from(PAGE)
                 .where(PAGE.ORGANISATION_ID.eq(organisationId))
                 .and(PAGE.MENUNAME.isNotNull())
                 .orderBy(PAGE.MENUORDER)
                 .stream()
-                .map(menuItemPath -> new MenuItem(menuItemPath.component1(), menuItemPath.component2()))
+                .map(menuItemPath -> new MenuItem(menuItemPath.component1(), menuItemPath.component2(), menuItemPath.component3()))
                 .collect(Collectors.toSet());
     }
 

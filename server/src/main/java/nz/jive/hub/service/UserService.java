@@ -1,7 +1,12 @@
 package nz.jive.hub.service;
 
-import org.jooq.Configuration;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
+import org.jooq.Configuration;
+import org.jooq.impl.DSL;
+
+import java.util.Optional;
+
+import static nz.jive.hub.database.generated.Tables.USER_DETAIL;
 
 /**
  * @author thomas.goodwin
@@ -14,10 +19,10 @@ public class UserService {
     }
 
     public UserDetailRecord create(
-        final String name,
-        final String preferredName,
-        final String email,
-        final int organisationId
+            final String name,
+            final String preferredName,
+            final String email,
+            final int organisationId
     ) {
         UserDetailRecord userDetailRecord = new UserDetailRecord();
         userDetailRecord.attach(configuration);
@@ -28,5 +33,13 @@ public class UserService {
         userDetailRecord.store();
 
         return userDetailRecord;
+    }
+
+    public Optional<UserDetailRecord> findByEmail(Integer organisationId, String email) {
+        return DSL.using(configuration)
+                .deleteFrom(USER_DETAIL)
+                .where(USER_DETAIL.ORGANISATION_ID.eq(organisationId).and(USER_DETAIL.EMAIL.eq(email)))
+                .returning()
+                .fetchOptional();
     }
 }

@@ -16,7 +16,19 @@ CREATE TABLE user_detail
     name              TEXT        not null,
     preferred_name    TEXT        not null,
     created_date      TIMESTAMPTZ not null,
-    last_updated_date TIMESTAMPTZ
+    last_updated_date TIMESTAMPTZ,
+
+    unique (organisation_id, email)
+);
+
+create table user_session
+(
+    id              INT  not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    organisation_id int references organisation (id) on update cascade on delete cascade,
+    user_id         int references user_detail (id) on update cascade on delete cascade,
+    session_Key     text not null,
+
+    unique (organisation_id, session_Key)
 );
 
 create table role

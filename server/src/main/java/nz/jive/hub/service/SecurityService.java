@@ -50,7 +50,7 @@ public class SecurityService {
 
     private Set<Statement> getPolicyStatements(final String stringValue) {
         try {
-            return objectMapper.readValue(stringValue, new TypeReference<Set<Statement>>() {
+            return objectMapper.readValue(stringValue, new TypeReference<>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -81,5 +81,9 @@ public class SecurityService {
                 .map(roleRecord -> new Policy(roleRecord.getName(), getPolicyStatements(roleRecord.getPolicy())))
                 .reduce(Policy::join)
                 .orElse(DENY_ALL);
+    }
+
+    public Policy getDenyAllPolicy() {
+        return DENY_ALL;
     }
 }

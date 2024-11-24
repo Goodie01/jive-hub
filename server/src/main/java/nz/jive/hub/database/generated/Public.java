@@ -14,6 +14,7 @@ import nz.jive.hub.database.generated.tables.Parameters;
 import nz.jive.hub.database.generated.tables.Role;
 import nz.jive.hub.database.generated.tables.UserDetail;
 import nz.jive.hub.database.generated.tables.UserHasRole;
+import nz.jive.hub.database.generated.tables.UserSession;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -69,6 +70,11 @@ public class Public extends SchemaImpl {
     public final UserHasRole USER_HAS_ROLE = UserHasRole.USER_HAS_ROLE;
 
     /**
+     * The table <code>public.user_session</code>.
+     */
+    public final UserSession USER_SESSION = UserSession.USER_SESSION;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -90,7 +96,8 @@ public class Public extends SchemaImpl {
             Parameters.PARAMETERS,
             Role.ROLE,
             UserDetail.USER_DETAIL,
-            UserHasRole.USER_HAS_ROLE
+            UserHasRole.USER_HAS_ROLE,
+            UserSession.USER_SESSION
         );
     }
 }

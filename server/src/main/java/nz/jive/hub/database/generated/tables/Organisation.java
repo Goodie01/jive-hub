@@ -13,6 +13,7 @@ import nz.jive.hub.database.generated.tables.Page.PagePath;
 import nz.jive.hub.database.generated.tables.Parameters.ParametersPath;
 import nz.jive.hub.database.generated.tables.Role.RolePath;
 import nz.jive.hub.database.generated.tables.UserDetail.UserDetailPath;
+import nz.jive.hub.database.generated.tables.UserSession.UserSessionPath;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 
 import org.jooq.Condition;
@@ -204,6 +205,19 @@ public class Organisation extends TableImpl<OrganisationRecord> {
             _userDetail = new UserDetailPath(this, null, Keys.USER_DETAIL__USER_DETAIL_ORGANISATION_ID_FKEY.getInverseKey());
 
         return _userDetail;
+    }
+
+    private transient UserSessionPath _userSession;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.user_session</code> table
+     */
+    public UserSessionPath userSession() {
+        if (_userSession == null)
+            _userSession = new UserSessionPath(this, null, Keys.USER_SESSION__USER_SESSION_ORGANISATION_ID_FKEY.getInverseKey());
+
+        return _userSession;
     }
 
     @Override

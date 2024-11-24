@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {PageResp} from "./rest";
+import {HomeResp, PageResp} from "./rest";
 
 @Injectable({
     providedIn: 'root'
@@ -14,8 +14,8 @@ export class ApiService {
         return this.http.get<PageResp>("api/v1/pages/" + url, this.generateHttpOptions());
     }
 
-    homeResponse(): Observable<PageResp> {
-        return this.http.get<PageResp>("api/v1/home", this.generateHttpOptions());
+    homeResponse(): Observable<HomeResp> {
+        return this.http.get<HomeResp>("api/v1/home", this.generateHttpOptions());
     }
 
     private generateHttpOptions() {

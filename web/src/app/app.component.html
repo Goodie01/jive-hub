@@ -1,5 +1,22 @@
-<main class="main" [innerHTML]="content">
-</main>
+<div class="grid-container">
+  <div class="menu">
+    <ul style="list-style-type:none">
+      <li *ngFor="let item of menu; index as i; ">
+        <a href="{{item.link}}">
+        {{item.name}}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="main">
+    <router-outlet/>
+  </div>
+
+  <div class="login">
+    Login button goes here
+  </div>
+  <div class="footer">Built with Jive Hub ©️ 2025</div>
+</div>
 
 
-<router-outlet />

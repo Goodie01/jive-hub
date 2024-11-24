@@ -15,6 +15,7 @@ import nz.jive.hub.database.generated.tables.Organisation.OrganisationPath;
 import nz.jive.hub.database.generated.tables.Parameters.ParametersPath;
 import nz.jive.hub.database.generated.tables.Role.RolePath;
 import nz.jive.hub.database.generated.tables.UserHasRole.UserHasRolePath;
+import nz.jive.hub.database.generated.tables.UserSession.UserSessionPath;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 
 import org.jooq.Condition;
@@ -174,6 +175,11 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
     }
 
     @Override
+    public List<UniqueKey<UserDetailRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.USER_DETAIL_ORGANISATION_ID_EMAIL_KEY);
+    }
+
+    @Override
     public List<ForeignKey<UserDetailRecord, ?>> getReferences() {
         return Arrays.asList(Keys.USER_DETAIL__USER_DETAIL_ORGANISATION_ID_FKEY);
     }
@@ -214,6 +220,19 @@ public class UserDetail extends TableImpl<UserDetailRecord> {
             _userHasRole = new UserHasRolePath(this, null, Keys.USER_HAS_ROLE__USER_HAS_ROLE_USER_ID_FKEY.getInverseKey());
 
         return _userHasRole;
+    }
+
+    private transient UserSessionPath _userSession;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.user_session</code> table
+     */
+    public UserSessionPath userSession() {
+        if (_userSession == null)
+            _userSession = new UserSessionPath(this, null, Keys.USER_SESSION__USER_SESSION_USER_ID_FKEY.getInverseKey());
+
+        return _userSession;
     }
 
     /**

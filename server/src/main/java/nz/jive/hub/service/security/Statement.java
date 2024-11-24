@@ -12,7 +12,7 @@ public record Statement(Effect effect, List<String> action, List<String> resourc
     }
 
     public static Statement deny(final String action, final String resource) {
-        return new Statement(Effect.ALLOW, List.of(action), List.of(resource));
+        return new Statement(Effect.DENY, List.of(action), List.of(resource));
     }
 
     @Override

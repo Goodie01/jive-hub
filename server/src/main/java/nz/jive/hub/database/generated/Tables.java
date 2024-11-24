@@ -11,6 +11,7 @@ import nz.jive.hub.database.generated.tables.Parameters;
 import nz.jive.hub.database.generated.tables.Role;
 import nz.jive.hub.database.generated.tables.UserDetail;
 import nz.jive.hub.database.generated.tables.UserHasRole;
+import nz.jive.hub.database.generated.tables.UserSession;
 
 
 /**
@@ -53,4 +54,9 @@ public class Tables {
      * The table <code>public.user_has_role</code>.
      */
     public static final UserHasRole USER_HAS_ROLE = UserHasRole.USER_HAS_ROLE;
+
+    /**
+     * The table <code>public.user_session</code>.
+     */
+    public static final UserSession USER_SESSION = UserSession.USER_SESSION;
 }
