@@ -3,11 +3,12 @@ package nz.jive.hub;
 /**
  * @author thomas.goodwin
  */
-public class Parameters {
-    public static Parameters SYSTEM_HOST = new Parameters("system.host", "jive-hub.local");
-    public static Parameters ORGANISATION_HOSTS = new Parameters("organisation.hosts", "[]");
-    public static Parameters SCHOOL_ENABLED = new Parameters("organisation.school.enabled", "false");
-    public static Parameters EVENT_ENABLED = new Parameters("organisation.event.enabled", "false");
+public enum Parameters {
+    SYSTEM_HOST("system.host", "jive-hub.local"),
+    ORGANISATION_HOSTS("organisation.hosts", "[]"),
+    SCHOOL_ENABLED("organisation.school.enabled", "false"),
+    EVENT_ENABLED("organisation.event.enabled", "false"),
+    ;
 
     private final String name;
     private final String defaultValue;
