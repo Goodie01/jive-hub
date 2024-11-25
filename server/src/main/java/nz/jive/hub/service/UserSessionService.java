@@ -31,10 +31,9 @@ public class UserSessionService {
 
     public Optional<UserSessionRecord> findByKey(int organisationId, String key) {
         return DSL.using(configuration)
-                .deleteFrom(USER_SESSION)
+                .selectFrom(USER_SESSION)
                 .where(USER_SESSION.SESSION_KEY.eq(key))
                 .and(USER_SESSION.ORGANISATION_ID.eq(organisationId))
-                .returning()
                 .fetchOptional();
     }
 }

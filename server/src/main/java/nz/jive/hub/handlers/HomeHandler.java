@@ -7,7 +7,9 @@ import nz.jive.hub.SecurityValues;
 import nz.jive.hub.Server;
 import nz.jive.hub.api.HomeResp;
 import nz.jive.hub.api.MenuItem;
+import nz.jive.hub.api.domain.User;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
+import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.service.PageService;
 import nz.jive.hub.service.ParameterStoreService;
 import nz.jive.hub.service.SecurityValidationService;
@@ -16,6 +18,7 @@ import nz.jive.hub.service.security.Policy;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -40,6 +43,7 @@ public class HomeHandler implements Handler {
         //Object o = ctx.bodyAsClass(Object.class);
         OrganisationRecord organisation = Objects.requireNonNull(ctx.attribute(Server.ATTR_ORGANISATION));
         Policy userPolicy = Objects.requireNonNull(ctx.attribute(Server.ATTR_USER_POLICY));
+        UserDetailRecord userDetailRecord = ctx.attribute(Server.ATTR_USER);
         ParameterMap organizationParameters = parameterStoreService.getOrganizationParameters(organisation.getId());
 
         SortedSet<MenuItem> menuItems = new TreeSet<>(pageService.findMenuPages(organisation.getId()));
@@ -63,6 +67,10 @@ public class HomeHandler implements Handler {
             menuItems.add(new MenuItem("Admin", "/admin/", 99));
         }
 
-        ctx.json(new HomeResp(organisation.getDisplayName(), menuItems));
+        User user = Optional.ofNullable(userDetailRecord)
+                .map(u -> new User(u.getId(), u.getName(), u.getPreferredName(), u.getEmail()))
+                .orElse(null);
+
+        ctx.json(new HomeResp(organisation.getDisplayName(), menuItems, user));
     }
 }

@@ -2,7 +2,7 @@
   <div class="menu">
     <ul style="list-style-type:none">
       <li *ngFor="let item of menu; index as i; ">
-        <a href="{{item.link}}">
+        <a [routerLink]="item.link">
         {{item.name}}
         </a>
       </li>
@@ -14,7 +14,7 @@
   </div>
 
   <div class="login">
-    Login button goes here
+    <app-logged-in-details/>
   </div>
   <div class="footer">Built with Jive Hub ©️ 2025</div>
 </div>

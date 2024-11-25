@@ -37,9 +37,8 @@ public class UserService {
 
     public Optional<UserDetailRecord> findByEmail(Integer organisationId, String email) {
         return DSL.using(configuration)
-                .deleteFrom(USER_DETAIL)
+                .selectFrom(USER_DETAIL)
                 .where(USER_DETAIL.ORGANISATION_ID.eq(organisationId).and(USER_DETAIL.EMAIL.eq(email)))
-                .returning()
                 .fetchOptional();
     }
 }

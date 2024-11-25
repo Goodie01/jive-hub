@@ -45,7 +45,7 @@ public class Server {
                                 .where(
                                         USER_DETAIL.ORGANISATION_ID.equal(organisation.getId())
                                                 .and(USER_DETAIL.ID.in(
-                                                        DSL.select(USER_SESSION.ID).from(USER_SESSION).where(USER_SESSION.SESSION_KEY.eq(authHeader)))
+                                                        DSL.select(USER_SESSION.USER_ID).from(USER_SESSION).where(USER_SESSION.SESSION_KEY.eq(authHeader)))
                                                 )
                                 )
                                 .fetchOptional()

@@ -73,7 +73,7 @@ public class Main {
                 })
                 .before(ctx -> Server.setup(ctx, databaseService, securityService))
                 .addHttpHandler(HandlerType.GET, "api/health", new HealthCheckHandler(databaseService))
-                .addHttpHandler(HandlerType.GET, "api/v1/login", new LoginHandler(userService, userSessionService))
+                .addHttpHandler(HandlerType.POST, "api/v1/login", new LoginHandler(userService, userSessionService))
                 .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(securityValidationService, pageService, parameterStoreService))
                 .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageService))
                 .start(JiveConfiguration.SERVER_PORT.intVal());

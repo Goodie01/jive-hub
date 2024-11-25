@@ -1,0 +1,7 @@
+<ng-container *ngIf="user != undefined">
+  <p>{{user.preferredName}}</p>
+  <a (click)="logout()">Logout</a>
+</ng-container>
+<ng-container *ngIf="user == undefined">
+  <a [routerLink]="'/login'">Log in</a>
+</ng-container>
