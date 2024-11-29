@@ -3,6 +3,7 @@ package nz.jive.hub.service.parameters;
 import nz.jive.hub.Parameters;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Goodie
@@ -19,4 +20,6 @@ public interface ParameterMap {
     void set(Parameters tParameter, String value);
 
     void set(Parameters tParameter, List<Object> value);
+
+    Map<Parameters, String> getAll();
 }

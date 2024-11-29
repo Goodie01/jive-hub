@@ -25,7 +25,7 @@ export class LogInFormComponent {
     this.apiService.login(this.email)
       .subscribe(value => {
         this.apiService.setToken(value.token)
-        this.apiCacheService.refreshHomeResp()
+        this.apiCacheService.homeResponse.refresh()
         this.router.navigateByUrl("/")
       })
   }

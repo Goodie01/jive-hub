@@ -1,38 +1,50 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {HomeResp} from './rest';
+import {AdminQueryResp, HomeResp} from './rest';
 import {ApiService} from './api.service';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiDataCacheService {
-  private requestingHomeResp: boolean = false;
-  private homeRespData?: HomeResp = undefined
-  private homeRespEventEmitter: EventEmitter<HomeResp> = new EventEmitter()
+  public homeResponse: CachedApiThing<HomeResp>;
+  public adminQueryResp: CachedApiThing<AdminQueryResp>;
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService) {
+    this.homeResponse = new CachedApiThing(() => apiService.homeResponse())
+    this.adminQueryResp = new CachedApiThing(() => apiService.adminQueryResponse())
+  }
+}
 
-  refreshHomeResp() {
-    if(!this.requestingHomeResp) {
-      this.requestingHomeResp = true;
-      this.apiService.homeResponse()
-        .subscribe(value => {
-          this.homeRespData = value;
-          this.homeRespEventEmitter.emit(value);
-          this.requestingHomeResp = false;
-        });
+class CachedApiThing<Type> {
+  private requesting: boolean = false;
+  private data?: Type = undefined;
+  private eventEmitter: EventEmitter<Type> = new EventEmitter();
+
+
+  constructor(private supplier: () => Observable<Type>) {
+  }
+
+  refresh() {
+    if(!this.requesting) {
+      this.requesting = true;
+      this.supplier().subscribe(value => {
+        this.data = value;
+        this.eventEmitter.emit(value);
+        this.requesting = false;
+        })
     }
   }
 
-  public homeResp(next?: (value: HomeResp) => void) {
-    if(next == undefined) {
+  subscribe(next?: (value: Type) => void) {
+    if (next == undefined) {
       return;
     }
-    this.homeRespEventEmitter.subscribe(next)
-    if(this.homeRespData != undefined) {
-      next(this.homeRespData)
+    this.eventEmitter.subscribe(next)
+    if (this.data != undefined) {
+      next(this.data)
     } else {
-      this.refreshHomeResp();
+      this.refresh();
     }
   }
 }

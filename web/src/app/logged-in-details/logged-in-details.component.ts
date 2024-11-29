@@ -19,14 +19,14 @@ export class LoggedInDetailsComponent {
   user?:User = undefined;
 
   constructor(private apiCache:ApiDataCacheService, private apiService: ApiService, private router: Router) {
-    apiCache.homeResp(value => {
+    apiCache.homeResponse.subscribe(value => {
       this.user = value.loggedInUser
     })
   }
 
   logout() {
     this.apiService.unsetToken()
-    this.apiCache.refreshHomeResp()
+    this.apiCache.homeResponse.refresh()
     this.router.navigateByUrl("/")
   }
 }

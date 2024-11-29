@@ -1,6 +1,10 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-11-25 20:01:53.
+// Generated using typescript-generator version 3.2.1263 on 2024-11-29 22:10:15.
+
+export interface AdminQueryResp {
+  parameters: { [index: string]: string };
+}
 
 export interface HomeResp {
   displayName: string;

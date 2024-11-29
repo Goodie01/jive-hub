@@ -11,6 +11,9 @@ import org.jooq.impl.DSL;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nz.jive.hub.database.generated.Tables.PARAMETERS;
 
@@ -55,16 +58,25 @@ public class ParameterMapImpl implements ParameterMap {
         setInternal(tParameter, value);
     }
 
+    @Override
+    public Map<Parameters, String> getAll() {
+        return Stream.of(Parameters.values())
+                .filter(parameters -> StringUtils.startsWith(parameters.getName(), "organisation."))
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        parameter -> parameters.getOrDefault(parameter.getName(), parameter.getDefaultValue())
+                ));
+    }
+
     public void set(Parameters tParameter, List<Object> values) {
-        String s = getWriteValueAsString(values);
+        String s = writeValueAsString(values);
         setInternal(tParameter, s);
     }
 
 
     private void setInternal(Parameters tParameter, String value) {
         if (StringUtils.equals(value, tParameter.getDefaultValue()) && parameters.get(tParameter.getName()) != null) {
-            DSL
-                    .using(configuration)
+            DSL.using(configuration)
                     .deleteFrom(PARAMETERS)
                     .where(PARAMETERS.USER_ID
                             .eq(userId)
@@ -80,8 +92,7 @@ public class ParameterMapImpl implements ParameterMap {
                     .execute();
             parameters.remove(tParameter.getName());
         } else if (!StringUtils.equals(value, tParameter.getDefaultValue())) {
-            DSL
-                    .using(configuration)
+            DSL.using(configuration)
                     .insertInto(PARAMETERS)
                     .columns(PARAMETERS.PARAMETER_NAME, PARAMETERS.VALUE, PARAMETERS.ORGANISATION_ID, PARAMETERS.USER_ID, PARAMETERS.CREATED_DATE)
                     .values(tParameter.getName(), value, organisationId, userId, OffsetDateTime.now())
@@ -93,7 +104,7 @@ public class ParameterMapImpl implements ParameterMap {
         }
     }
 
-    private String getWriteValueAsString(List<Object> values) {
+    private String writeValueAsString(List<Object> values) {
         try {
             return objectMapper.writeValueAsString(values);
         } catch (JsonProcessingException e) {

@@ -17,7 +17,7 @@ export class AppComponent {
   menu: MenuItem[] = []
 
   constructor(private apiService: ApiDataCacheService, private titleService:Title) {
-    apiService.homeResp(value => {
+    apiService.homeResponse.subscribe(value => {
       this.menu = value.menuItems
     })
   }

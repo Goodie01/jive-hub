@@ -7,10 +7,7 @@ import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
 import nz.jive.hub.facade.OrganisationFacade;
-import nz.jive.hub.handlers.HealthCheckHandler;
-import nz.jive.hub.handlers.HomeHandler;
-import nz.jive.hub.handlers.LoginHandler;
-import nz.jive.hub.handlers.PagesHandler;
+import nz.jive.hub.handlers.*;
 import nz.jive.hub.service.*;
 import org.jooq.impl.DSL;
 
@@ -76,6 +73,7 @@ public class Main {
                 .addHttpHandler(HandlerType.POST, "api/v1/login", new LoginHandler(userService, userSessionService))
                 .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(securityValidationService, pageService, parameterStoreService))
                 .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageService))
+                .addHttpHandler(HandlerType.GET, "api/v1/admin", new AdminQueryHandler(securityValidationService, parameterStoreService))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }
 }

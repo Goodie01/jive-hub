@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {HomeResp, LoginReq, LoginResp, PageResp} from "./rest";
+import {AdminQueryResp, HomeResp, LoginReq, LoginResp, PageResp} from "./rest";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,10 @@ export class ApiService {
 
   homeResponse(): Observable<HomeResp> {
     return this.http.get<HomeResp>("api/v1/home", this.generateHttpOptions());
+  }
+
+  adminQueryResponse(): Observable<AdminQueryResp> {
+    return this.http.get<AdminQueryResp>("api/v1/admin", this.generateHttpOptions());
   }
 
   login(email: string): Observable<LoginResp> {
