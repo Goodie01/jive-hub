@@ -1,0 +1,113 @@
+
+table {
+  margin: 10px;
+  table-layout: fixed;
+  width: calc(100% - 20px);
+  min-width: 644px;
+  border: 1px solid #000000;
+  border-radius: 4px;
+  border-spacing: 0;
+}
+
+tbody td {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+
+tbody tr:hover {
+  background-color: var(--in-content-item-hover);
+  color: var(--in-content-item-hover-text);
+}
+
+tbody tr:nth-child(odd) {
+  background-color: rgba(12, 12, 13, 0.05);
+}
+
+input {
+  appearance: textfield;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: match-parent;
+  padding: .45em;
+  border: 1px solid var(--in-content-box-border-color);
+  border-radius: 4px;
+  color: inherit;
+}
+
+:root {
+
+  --in-content-page-color: rgb(21, 20, 26);
+  --in-content-text-color: var(--in-content-page-color);
+  --in-content-box-background-odd: rgba(12, 12, 13, 0.05); /* grey 90 a05 */
+  --in-content-box-border-color: color-mix(in srgb, currentColor 41%, transparent);
+  --in-content-box-info-background: #f0f0f4;
+  --in-content-item-hover: color-mix(in srgb, var(--in-content-primary-button-background) 20%, transparent);
+  --in-content-item-hover-text: var(--in-content-page-color);
+  --in-content-item-selected: var(--in-content-primary-button-background);
+  --in-content-item-selected-text: var(--in-content-primary-button-text-color);
+  --in-content-border-invalid: var(--red-50);
+  --in-content-border-color: #d7d7db;
+  --in-content-button-text-color: var(--in-content-text-color);
+  --in-content-button-text-color-hover: var(--in-content-text-color);
+  --in-content-button-text-color-active: var(--in-content-button-text-color-hover);
+  --in-content-button-background: color-mix(in srgb, currentColor 7%, transparent);
+  --in-content-button-background-hover: color-mix(in srgb, currentColor 14%, transparent);
+  --in-content-button-background-active: color-mix(in srgb, currentColor 21%, transparent);
+  --in-content-button-border-color: transparent;
+  --in-content-button-border-color-hover: transparent;
+  --in-content-button-border-color-active: var(--in-content-button-border-color-hover);
+  --in-content-primary-button-text-color: rgb(251,251,254);
+  --in-content-primary-button-text-color-hover: var(--in-content-primary-button-text-color);
+  --in-content-primary-button-text-color-active: var(--in-content-primary-button-text-color);
+  --in-content-primary-button-background: #0061e0;
+  --in-content-primary-button-background-hover: #0250bb;
+  --in-content-primary-button-background-active: #053e94;
+  --in-content-primary-button-border-color: transparent;
+  --in-content-primary-button-border-hover: transparent;
+  --in-content-primary-button-border-active: transparent;
+  --in-content-danger-button-background: #e22850;
+  --in-content-danger-button-background-hover: #c50042;
+  --in-content-danger-button-background-active: #810220;
+  --in-content-table-background: #f8f8fa;
+  --in-content-table-border-color: var(--in-content-box-border-color);
+  --in-content-table-header-background: var(--in-content-primary-button-background);
+  --in-content-table-header-color: var(--in-content-primary-button-text-color);
+  --in-content-sidebar-width: 280px;
+
+  --dialog-warning-text-color: var(--red-60);
+
+  --blue-40: #45a1ff;
+  --blue-50: #0a84ff;
+  --blue-60: #0060df;
+  --grey-30: #d7d7db;
+  --grey-60: #4a4a4f;
+  --grey-90-a10: rgba(12, 12, 13, 0.1);
+  --grey-90-a20: rgba(12, 12, 13, 0.2);
+  --grey-90-a30: rgba(12, 12, 13, 0.3);
+  --grey-90-a60: rgba(12, 12, 13, 0.6);
+  --green-60: #12bc00;
+  --green-70: #058b00;
+  --orange-50: #ff9400;
+  --red-40: #ff4f5e;
+  --red-50: #ff0039;
+  --red-60: #d70022;
+  --yellow-50: #ffe900;
+  --yellow-60: #d7b600;
+  --yellow-60-a30: rgba(215, 182, 0, 0.3);
+  --yellow-90: #3e2800;
+
+  --shadow-10: 0 1px 4px var(--grey-90-a10);
+  --shadow-30: 0 4px 16px var(--grey-90-a10);
+
+  --card-padding: 16px;
+  --card-shadow: var(--shadow-10);
+  --card-outline-color: var(--grey-30);
+  --card-shadow-hover: var(--card-shadow), 0 0 0 5px var(--card-outline-color);
+
+  -moz-theme: non-native;
+  color-scheme: light dark;
+}
