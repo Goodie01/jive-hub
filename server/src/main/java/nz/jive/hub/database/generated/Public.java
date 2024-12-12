@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
+import nz.jive.hub.database.generated.tables.HostNames;
 import nz.jive.hub.database.generated.tables.Organisation;
 import nz.jive.hub.database.generated.tables.Page;
 import nz.jive.hub.database.generated.tables.Parameters;
@@ -38,6 +39,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.flyway_schema_history</code>.
      */
     public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
+
+    /**
+     * The table <code>public.host_names</code>.
+     */
+    public final HostNames HOST_NAMES = HostNames.HOST_NAMES;
 
     /**
      * The table <code>public.organisation</code>.
@@ -91,6 +97,7 @@ public class Public extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
+            HostNames.HOST_NAMES,
             Organisation.ORGANISATION,
             Page.PAGE,
             Parameters.PARAMETERS,

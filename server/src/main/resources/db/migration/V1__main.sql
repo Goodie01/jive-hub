@@ -1,6 +1,7 @@
 create table organisation
 (
     id                INT         not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    slug              TEXT        not null unique,
     display_name      TEXT        not null,
     created_date      TIMESTAMPTZ not null,
     last_updated_date TIMESTAMPTZ
@@ -78,4 +79,10 @@ create table page
 
     primary key (organisation_id, path),
     unique (organisation_id, menuName)
+);
+
+create table host_names
+(
+    host            text not null unique,
+    organisation_id int references organisation (id) on update cascade on delete cascade
 )

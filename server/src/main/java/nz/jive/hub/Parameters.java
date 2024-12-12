@@ -5,7 +5,6 @@ package nz.jive.hub;
  */
 public enum Parameters {
     SYSTEM_HOST("system.host", "jive-hub.local"),
-    ORGANISATION_HOSTS("organisation.hosts", "[]"),
     SCHOOL_ENABLED("organisation.school.enabled", "false"),
     EVENT_ENABLED("organisation.event.enabled", "false"),
     ;

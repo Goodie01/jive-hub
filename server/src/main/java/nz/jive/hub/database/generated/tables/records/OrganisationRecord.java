@@ -35,45 +35,59 @@ public class OrganisationRecord extends UpdatableRecordImpl<OrganisationRecord> 
     }
 
     /**
+     * Setter for <code>public.organisation.slug</code>.
+     */
+    public void setSlug(String value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>public.organisation.slug</code>.
+     */
+    public String getSlug() {
+        return (String) get(1);
+    }
+
+    /**
      * Setter for <code>public.organisation.display_name</code>.
      */
     public void setDisplayName(String value) {
-        set(1, value);
+        set(2, value);
     }
 
     /**
      * Getter for <code>public.organisation.display_name</code>.
      */
     public String getDisplayName() {
-        return (String) get(1);
+        return (String) get(2);
     }
 
     /**
      * Setter for <code>public.organisation.created_date</code>.
      */
     public void setCreatedDate(OffsetDateTime value) {
-        set(2, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>public.organisation.created_date</code>.
      */
     public OffsetDateTime getCreatedDate() {
-        return (OffsetDateTime) get(2);
+        return (OffsetDateTime) get(3);
     }
 
     /**
      * Setter for <code>public.organisation.last_updated_date</code>.
      */
     public void setLastUpdatedDate(OffsetDateTime value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
      * Getter for <code>public.organisation.last_updated_date</code>.
      */
     public OffsetDateTime getLastUpdatedDate() {
-        return (OffsetDateTime) get(3);
+        return (OffsetDateTime) get(4);
     }
 
     // -------------------------------------------------------------------------
@@ -99,10 +113,11 @@ public class OrganisationRecord extends UpdatableRecordImpl<OrganisationRecord> 
     /**
      * Create a detached, initialised OrganisationRecord
      */
-    public OrganisationRecord(Integer id, String displayName, OffsetDateTime createdDate, OffsetDateTime lastUpdatedDate) {
+    public OrganisationRecord(Integer id, String slug, String displayName, OffsetDateTime createdDate, OffsetDateTime lastUpdatedDate) {
         super(Organisation.ORGANISATION);
 
         setId(id);
+        setSlug(slug);
         setDisplayName(displayName);
         setCreatedDate(createdDate);
         setLastUpdatedDate(lastUpdatedDate);

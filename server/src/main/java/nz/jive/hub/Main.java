@@ -3,12 +3,13 @@ package nz.jive.hub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
 import io.javalin.http.HandlerType;
+import nz.jive.hub.Repository.*;
 import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
-import nz.jive.hub.facade.OrganisationFacade;
+import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
-import nz.jive.hub.service.*;
+import nz.jive.hub.service.SecurityValidationService;
 import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
@@ -34,26 +35,50 @@ public class Main {
     }
 
     private static void run() throws SQLException {
-        final ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         DatabaseService databaseService = new DatabaseService();
-        OrganisationService organisationService = new OrganisationService(databaseService.getConfiguration());
-        PageService pageService = new PageService(databaseService.getConfiguration());
-        ParameterStoreService parameterStoreService = new ParameterStoreService(databaseService.getConfiguration(), objectMapper);
-        UserService userService = new UserService(databaseService.getConfiguration());
-        UserSessionService userSessionService = new UserSessionService(databaseService.getConfiguration());
-        SecurityService securityService = new SecurityService(databaseService.getConfiguration(), objectMapper);
+
+        OrganisationRepository organisationRepository = new OrganisationRepository();
+        PageRepository pageRepository = new PageRepository();
+        ParameterStoreRepository parameterStoreRepository = new ParameterStoreRepository(objectMapper);
+        UserRepository userRepository = new UserRepository();
+        UserSessionRepository userSessionRepository = new UserSessionRepository();
+        SecurityRepository securityRepository = new SecurityRepository(objectMapper);
+        HostsRepository hostsRepository = new HostsRepository();
+
         SecurityValidationService securityValidationService = new SecurityValidationService();
 
         OrganisationFacade organisationFacade = new OrganisationFacade(
-                organisationService,
-                pageService,
-                parameterStoreService,
-                userService,
-                securityService
-        );
+                databaseService,
+                organisationRepository,
+                pageRepository,
+                parameterStoreRepository,
+                userRepository,
+                securityRepository,
+                hostsRepository);
+        UserSessionFacade userSessionFacade = new UserSessionFacade(
+                databaseService,
+                userRepository,
+                userSessionRepository);
+        AdminFacade adminFacade = new AdminFacade(
+                databaseService,
+                securityValidationService,
+                parameterStoreRepository);
+        MenuFacade menuFacade = new MenuFacade(
+                databaseService,
+                parameterStoreRepository,
+                pageRepository,
+                securityValidationService);
+        SecurityFacade securityFacade = new SecurityFacade(
+                databaseService,
+                securityRepository,
+                objectMapper);
+        PageFacade pageFacade = new PageFacade(
+                databaseService,
+                pageRepository);
+        SessionFacade sessionFacade = new SessionFacade();
 
-        DSL
-                .using(databaseService.getConfiguration())
+        DSL.using(databaseService.getConfiguration())
                 .deleteFrom(ORGANISATION)
                 .execute();
 
@@ -68,12 +93,12 @@ public class Main {
                     javalinConfig.useVirtualThreads = true;
                     javalinConfig.showJavalinBanner = false;
                 })
-                .before(ctx -> Server.setup(ctx, databaseService, securityService))
+                .before(ctx -> Server.setup(ctx, sessionFacade, userSessionFacade, organisationFacade, securityFacade))
                 .addHttpHandler(HandlerType.GET, "api/health", new HealthCheckHandler(databaseService))
-                .addHttpHandler(HandlerType.POST, "api/v1/login", new LoginHandler(userService, userSessionService))
-                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(securityValidationService, pageService, parameterStoreService))
-                .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageService))
-                .addHttpHandler(HandlerType.GET, "api/v1/admin", new AdminQueryHandler(securityValidationService, parameterStoreService))
+                .addHttpHandler(HandlerType.POST, "api/v1/login", new LoginHandler(userSessionFacade, sessionFacade))
+                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(menuFacade, sessionFacade))
+                .addHttpHandler(HandlerType.GET, "api/v1/admin", new AdminQueryHandler(adminFacade, sessionFacade))
+                .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageFacade, sessionFacade))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }
 }

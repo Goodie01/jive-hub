@@ -5,10 +5,13 @@ package nz.jive.hub.database.generated.tables;
 
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import nz.jive.hub.database.generated.Keys;
 import nz.jive.hub.database.generated.Public;
+import nz.jive.hub.database.generated.tables.HostNames.HostNamesPath;
 import nz.jive.hub.database.generated.tables.Page.PagePath;
 import nz.jive.hub.database.generated.tables.Parameters.ParametersPath;
 import nz.jive.hub.database.generated.tables.Role.RolePath;
@@ -64,6 +67,11 @@ public class Organisation extends TableImpl<OrganisationRecord> {
      * The column <code>public.organisation.id</code>.
      */
     public final TableField<OrganisationRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>public.organisation.slug</code>.
+     */
+    public final TableField<OrganisationRecord, String> SLUG = createField(DSL.name("slug"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.organisation.display_name</code>.
@@ -155,6 +163,24 @@ public class Organisation extends TableImpl<OrganisationRecord> {
     @Override
     public UniqueKey<OrganisationRecord> getPrimaryKey() {
         return Keys.ORGANISATION_PKEY;
+    }
+
+    @Override
+    public List<UniqueKey<OrganisationRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.ORGANISATION_SLUG_KEY);
+    }
+
+    private transient HostNamesPath _hostNames;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.host_names</code>
+     * table
+     */
+    public HostNamesPath hostNames() {
+        if (_hostNames == null)
+            _hostNames = new HostNamesPath(this, null, Keys.HOST_NAMES__HOST_NAMES_ORGANISATION_ID_FKEY.getInverseKey());
+
+        return _hostNames;
     }
 
     private transient PagePath _page;

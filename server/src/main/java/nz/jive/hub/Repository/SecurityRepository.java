@@ -1,4 +1,4 @@
-package nz.jive.hub.service;
+package nz.jive.hub.Repository;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -11,6 +11,7 @@ import nz.jive.hub.service.security.Statement;
 import org.jooq.Configuration;
 import org.jooq.impl.DSL;
 
+import java.util.List;
 import java.util.Set;
 
 import static nz.jive.hub.database.generated.Tables.ROLE;
@@ -19,17 +20,15 @@ import static nz.jive.hub.database.generated.Tables.USER_HAS_ROLE;
 /**
  * @author Goodie
  */
-public class SecurityService {
+public class SecurityRepository {
     private static final Policy DENY_ALL = Policy.of("Default", Statement.deny("*", "*"));
-    private final Configuration configuration;
     private final ObjectMapper objectMapper;
 
-    public SecurityService(Configuration configuration, ObjectMapper objectMapper) {
-        this.configuration = configuration;
+    public SecurityRepository(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public Policy save(final int organisationId, final Policy policy) {
+    public Policy save(Configuration configuration, final int organisationId, final Policy policy) {
         RoleRecord roleRecord = new RoleRecord();
         roleRecord.attach(configuration);
         roleRecord.setOrganisationId(organisationId);
@@ -57,7 +56,7 @@ public class SecurityService {
         }
     }
 
-    public void assignRole(UserDetailRecord userDetailRecord, Policy role) {
+    public void assignRole(Configuration configuration, UserDetailRecord userDetailRecord, Policy role) {
         UserHasRoleRecord userHasRoleRecord = new UserHasRoleRecord();
         userHasRoleRecord.attach(configuration);
         userHasRoleRecord.setOrganisationId(userDetailRecord.getOrganisationId());
@@ -66,7 +65,7 @@ public class SecurityService {
         userHasRoleRecord.store();
     }
 
-    public Policy getCombinedRoleForUser(UserDetailRecord userDetailRecord) {
+    public List<RoleRecord> getAllPolicies(Configuration configuration, UserDetailRecord userDetailRecord) {
         return DSL
                 .using(configuration)
                 .selectFrom(ROLE)
@@ -78,12 +77,6 @@ public class SecurityService {
                                 .and(USER_HAS_ROLE.ORGANISATION_ID.eq(userDetailRecord.getOrganisationId()))
                 ))
                 .stream()
-                .map(roleRecord -> new Policy(roleRecord.getName(), getPolicyStatements(roleRecord.getPolicy())))
-                .reduce(Policy::join)
-                .orElse(DENY_ALL);
-    }
-
-    public Policy getDenyAllPolicy() {
-        return DENY_ALL;
+                .toList();
     }
 }

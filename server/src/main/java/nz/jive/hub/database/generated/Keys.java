@@ -5,6 +5,7 @@ package nz.jive.hub.database.generated;
 
 
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
+import nz.jive.hub.database.generated.tables.HostNames;
 import nz.jive.hub.database.generated.tables.Organisation;
 import nz.jive.hub.database.generated.tables.Page;
 import nz.jive.hub.database.generated.tables.Parameters;
@@ -13,6 +14,7 @@ import nz.jive.hub.database.generated.tables.UserDetail;
 import nz.jive.hub.database.generated.tables.UserHasRole;
 import nz.jive.hub.database.generated.tables.UserSession;
 import nz.jive.hub.database.generated.tables.records.FlywaySchemaHistoryRecord;
+import nz.jive.hub.database.generated.tables.records.HostNamesRecord;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.PageRecord;
 import nz.jive.hub.database.generated.tables.records.ParametersRecord;
@@ -40,7 +42,9 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
+    public static final UniqueKey<HostNamesRecord> HOST_NAMES_HOST_KEY = Internal.createUniqueKey(HostNames.HOST_NAMES, DSL.name("host_names_host_key"), new TableField[] { HostNames.HOST_NAMES.HOST }, true);
     public static final UniqueKey<OrganisationRecord> ORGANISATION_PKEY = Internal.createUniqueKey(Organisation.ORGANISATION, DSL.name("organisation_pkey"), new TableField[] { Organisation.ORGANISATION.ID }, true);
+    public static final UniqueKey<OrganisationRecord> ORGANISATION_SLUG_KEY = Internal.createUniqueKey(Organisation.ORGANISATION, DSL.name("organisation_slug_key"), new TableField[] { Organisation.ORGANISATION.SLUG }, true);
     public static final UniqueKey<PageRecord> PAGE_ORGANISATION_ID_MENUNAME_KEY = Internal.createUniqueKey(Page.PAGE, DSL.name("page_organisation_id_menuname_key"), new TableField[] { Page.PAGE.ORGANISATION_ID, Page.PAGE.MENUNAME }, true);
     public static final UniqueKey<PageRecord> PAGE_PKEY = Internal.createUniqueKey(Page.PAGE, DSL.name("page_pkey"), new TableField[] { Page.PAGE.ORGANISATION_ID, Page.PAGE.PATH }, true);
     public static final UniqueKey<ParametersRecord> PARAMETERS_ORGANISATION_ID_USER_ID_PARAMETER_NAME_KEY = Internal.createUniqueKey(Parameters.PARAMETERS, DSL.name("parameters_organisation_id_user_id_parameter_name_key"), new TableField[] { Parameters.PARAMETERS.ORGANISATION_ID, Parameters.PARAMETERS.USER_ID, Parameters.PARAMETERS.PARAMETER_NAME }, true);
@@ -56,6 +60,7 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<HostNamesRecord, OrganisationRecord> HOST_NAMES__HOST_NAMES_ORGANISATION_ID_FKEY = Internal.createForeignKey(HostNames.HOST_NAMES, DSL.name("host_names_organisation_id_fkey"), new TableField[] { HostNames.HOST_NAMES.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<PageRecord, OrganisationRecord> PAGE__PAGE_ORGANISATION_ID_FKEY = Internal.createForeignKey(Page.PAGE, DSL.name("page_organisation_id_fkey"), new TableField[] { Page.PAGE.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<ParametersRecord, OrganisationRecord> PARAMETERS__PARAMETERS_ORGANISATION_ID_FKEY = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("parameters_organisation_id_fkey"), new TableField[] { Parameters.PARAMETERS.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<ParametersRecord, UserDetailRecord> PARAMETERS__PARAMETERS_USER_ID_FKEY = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("parameters_user_id_fkey"), new TableField[] { Parameters.PARAMETERS.USER_ID }, Keys.USER_DETAIL_PKEY, new TableField[] { UserDetail.USER_DETAIL.ID }, true);

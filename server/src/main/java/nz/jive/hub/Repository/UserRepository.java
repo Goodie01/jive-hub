@@ -1,4 +1,4 @@
-package nz.jive.hub.service;
+package nz.jive.hub.Repository;
 
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import org.jooq.Configuration;
@@ -11,14 +11,9 @@ import static nz.jive.hub.database.generated.Tables.USER_DETAIL;
 /**
  * @author thomas.goodwin
  */
-public class UserService {
-    private final Configuration configuration;
-
-    public UserService(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
+public class UserRepository {
     public UserDetailRecord create(
+            Configuration configuration,
             final String name,
             final String preferredName,
             final String email,
@@ -35,7 +30,7 @@ public class UserService {
         return userDetailRecord;
     }
 
-    public Optional<UserDetailRecord> findByEmail(Integer organisationId, String email) {
+    public Optional<UserDetailRecord> findByEmail(Configuration configuration, Integer organisationId, String email) {
         return DSL.using(configuration)
                 .selectFrom(USER_DETAIL)
                 .where(USER_DETAIL.ORGANISATION_ID.eq(organisationId).and(USER_DETAIL.EMAIL.eq(email)))
