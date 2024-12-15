@@ -1,15 +1,16 @@
 package nz.jive.hub.handlers;
 
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.facade.SessionFacade;
+import nz.jive.hub.service.SecurityValidationService;
 import org.jetbrains.annotations.NotNull;
 import org.jooq.impl.DSL;
 
 /**
  * @author Goodie
  */
-public class HealthCheckHandler implements Handler {
+public class HealthCheckHandler implements InternalHandler {
     private final DatabaseService databaseService;
 
     public HealthCheckHandler(DatabaseService databaseService) {
@@ -17,7 +18,7 @@ public class HealthCheckHandler implements Handler {
     }
 
     @Override
-    public void handle(@NotNull Context ctx) throws Exception {
+    public void handle(@NotNull Context ctx, SessionFacade sessionFacade, SecurityValidationService securityValidationService) throws Exception {
         Integer i = DSL
                 .using(databaseService.getConfiguration())
                 .selectOne()

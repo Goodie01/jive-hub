@@ -13,10 +13,9 @@ import static nz.jive.hub.database.generated.Tables.ORGANISATION;
  * @author Goodie
  */
 public class OrganisationRepository {
-    public OrganisationRecord createOrganisation(final Configuration configuration, String slug, final String orgDisplayName) {
+    public OrganisationRecord createOrganisation(final Configuration configuration, final String orgDisplayName) {
         OrganisationRecord organisationRecord = new OrganisationRecord();
         organisationRecord.attach(configuration);
-        organisationRecord.setSlug(slug);
         organisationRecord.setDisplayName(orgDisplayName);
         organisationRecord.store();
 

@@ -21,7 +21,6 @@ import static nz.jive.hub.database.generated.Tables.USER_HAS_ROLE;
  * @author Goodie
  */
 public class SecurityRepository {
-    private static final Policy DENY_ALL = Policy.of("Default", Statement.deny("*", "*"));
     private final ObjectMapper objectMapper;
 
     public SecurityRepository(ObjectMapper objectMapper) {

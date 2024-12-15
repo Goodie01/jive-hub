@@ -2,14 +2,13 @@ package nz.jive.hub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-import io.javalin.http.HandlerType;
 import nz.jive.hub.Repository.*;
 import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
 import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
-import nz.jive.hub.service.SecurityValidationService;
+import nz.jive.hub.service.ServerService;
 import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
@@ -46,8 +45,6 @@ public class Main {
         SecurityRepository securityRepository = new SecurityRepository(objectMapper);
         HostsRepository hostsRepository = new HostsRepository();
 
-        SecurityValidationService securityValidationService = new SecurityValidationService();
-
         OrganisationFacade organisationFacade = new OrganisationFacade(
                 databaseService,
                 organisationRepository,
@@ -62,13 +59,12 @@ public class Main {
                 userSessionRepository);
         AdminFacade adminFacade = new AdminFacade(
                 databaseService,
-                securityValidationService,
                 parameterStoreRepository);
         MenuFacade menuFacade = new MenuFacade(
                 databaseService,
                 parameterStoreRepository,
-                pageRepository,
-                securityValidationService);
+                pageRepository
+        );
         SecurityFacade securityFacade = new SecurityFacade(
                 databaseService,
                 securityRepository,
@@ -76,29 +72,27 @@ public class Main {
         PageFacade pageFacade = new PageFacade(
                 databaseService,
                 pageRepository);
-        SessionFacade sessionFacade = new SessionFacade();
-
         DSL.using(databaseService.getConfiguration())
                 .deleteFrom(ORGANISATION)
                 .execute();
 
-        organisationFacade.createOrganisation("Test",
+        organisationFacade.createOrganisation("This is a test",
                 "Thomas Goodwin",
                 "Thomas",
                 "jive-hub.test@goodwin.geek.nz"
         );
 
-        Javalin
-                .create(javalinConfig -> {
-                    javalinConfig.useVirtualThreads = true;
-                    javalinConfig.showJavalinBanner = false;
-                })
-                .before(ctx -> Server.setup(ctx, sessionFacade, userSessionFacade, organisationFacade, securityFacade))
-                .addHttpHandler(HandlerType.GET, "api/health", new HealthCheckHandler(databaseService))
-                .addHttpHandler(HandlerType.POST, "api/v1/login", new LoginHandler(userSessionFacade, sessionFacade))
-                .addHttpHandler(HandlerType.GET, "api/v1/home", new HomeHandler(menuFacade, sessionFacade))
-                .addHttpHandler(HandlerType.GET, "api/v1/admin", new AdminQueryHandler(adminFacade, sessionFacade))
-                .addHttpHandler(HandlerType.GET, "api/v1/pages/*", new PagesHandler(pageFacade, sessionFacade))
+
+        new ServerService().setUp(() -> Javalin.create(javalinConfig -> {
+                            javalinConfig.useVirtualThreads = true;
+                            javalinConfig.showJavalinBanner = false;
+                        })
+                        .before(ctx -> Server.setup(ctx, userSessionFacade, organisationFacade, securityFacade)))
+                .get("api/health", new HealthCheckHandler(databaseService))
+                .post("api/v1/login", new LoginHandler(userSessionFacade))
+                .get("api/v1/home", new HomeHandler(menuFacade))
+                .get("api/v1/admin", new AdminQueryHandler(adminFacade))
+                .get("api/v1/pages/*", new PagesHandler(pageFacade))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }
 }

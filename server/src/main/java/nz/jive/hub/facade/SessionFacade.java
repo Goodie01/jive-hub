@@ -14,28 +14,33 @@ public class SessionFacade {
     private static final String ATTR_ORGANISATION = "organisation";
     private static final String ATTR_USER = "user";
     private static final String ATTR_USER_POLICY = "userPolicy";
+    private final Context ctx;
 
-    public void store(Context ctx, UserDetailRecord userDetailRecord) {
-        ctx.attribute(ATTR_USER, userDetailRecord);
+    public SessionFacade(Context ctx) {
+        this.ctx = ctx;
     }
 
-    public void store(Context ctx, Policy policy) {
-        ctx.attribute(ATTR_USER_POLICY, policy);
+    public void store(UserDetailRecord userDetailRecord) {
+        this.ctx.attribute(ATTR_USER, userDetailRecord);
     }
 
-    public void store(Context ctx, OrganisationRecord organisationRecord) {
-        ctx.attribute(ATTR_ORGANISATION, organisationRecord);
+    public void store(Policy policy) {
+        this.ctx.attribute(ATTR_USER_POLICY, policy);
     }
 
-    public Optional<UserDetailRecord> userRecord(Context ctx) {
-        return Optional.ofNullable(ctx.attribute(ATTR_USER));
+    public void store(OrganisationRecord organisationRecord) {
+        this.ctx.attribute(ATTR_ORGANISATION, organisationRecord);
     }
 
-    public Optional<Policy> policy(Context ctx) {
-        return Optional.ofNullable(ctx.attribute(ATTR_USER_POLICY));
+    public Optional<UserDetailRecord> userRecord() {
+        return Optional.ofNullable(this.ctx.attribute(ATTR_USER));
     }
 
-    public Optional<OrganisationRecord> organisation(Context ctx) {
-        return Optional.ofNullable(ctx.attribute(ATTR_ORGANISATION));
+    public Optional<Policy> policy() {
+        return Optional.ofNullable(this.ctx.attribute(ATTR_USER_POLICY));
+    }
+
+    public Optional<OrganisationRecord> organisation() {
+        return Optional.ofNullable(this.ctx.attribute(ATTR_ORGANISATION));
     }
 }

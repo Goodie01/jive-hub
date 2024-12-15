@@ -7,6 +7,7 @@ import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.service.security.Policy;
+import nz.jive.hub.service.security.SecurityUtils;
 import nz.jive.hub.service.security.Statement;
 import org.jooq.impl.DSL;
 
@@ -55,8 +56,7 @@ public class OrganisationFacade {
         }
 
         DSL.using(databaseService.getConfiguration()).transaction(configuration -> {
-            String slug = orgDisplayName.replace(' ', '_').toLowerCase(Locale.ENGLISH); //TODO make unique
-            OrganisationRecord organisation = organisationRepository.createOrganisation(configuration, slug, orgDisplayName);
+            OrganisationRecord organisation = organisationRepository.createOrganisation(configuration, orgDisplayName);
 
             pageRepository.save(
                     configuration, organisation.getId(), "",
@@ -70,12 +70,12 @@ public class OrganisationFacade {
             UserDetailRecord userDetailRecord = userRepository.create(configuration, userName, userPreferredName, email, organisation.getId());
 
             ParameterMap systemParameters = parameterStoreRepository.getSystemParameters(configuration);
-            ParameterMap organizationParameters = parameterStoreRepository.getOrganizationParameters(configuration, organisation.getId());
-
+            String slug = orgDisplayName.replaceAll("\\s", "_").toLowerCase(Locale.ENGLISH); //TODO make unique
             String hostName = slug + '.' + systemParameters.stringVal(Parameters.SYSTEM_HOST);
             hostsRepository.addHostName(configuration, organisation, hostName);
 
-            Policy adminRole = securityRepository.save(configuration, organisation.getId(), Policy.of("Admin", Statement.allow("*", slug + ".*")));
+            String nameSpace = SecurityUtils.namespace(organisation);
+            Policy adminRole = securityRepository.save(configuration, organisation.getId(), Policy.of("Admin", Statement.allow(nameSpace, "*", ".*")));
             securityRepository.assignRole(configuration, userDetailRecord, adminRole);
         });
     }

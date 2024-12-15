@@ -5,9 +5,7 @@ package nz.jive.hub.database.generated.tables;
 
 
 import java.time.OffsetDateTime;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 import nz.jive.hub.database.generated.Keys;
 import nz.jive.hub.database.generated.Public;
@@ -67,11 +65,6 @@ public class Organisation extends TableImpl<OrganisationRecord> {
      * The column <code>public.organisation.id</code>.
      */
     public final TableField<OrganisationRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
-
-    /**
-     * The column <code>public.organisation.slug</code>.
-     */
-    public final TableField<OrganisationRecord, String> SLUG = createField(DSL.name("slug"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.organisation.display_name</code>.
@@ -163,11 +156,6 @@ public class Organisation extends TableImpl<OrganisationRecord> {
     @Override
     public UniqueKey<OrganisationRecord> getPrimaryKey() {
         return Keys.ORGANISATION_PKEY;
-    }
-
-    @Override
-    public List<UniqueKey<OrganisationRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.ORGANISATION_SLUG_KEY);
     }
 
     private transient HostNamesPath _hostNames;

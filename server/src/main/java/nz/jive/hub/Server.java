@@ -13,24 +13,25 @@ import nz.jive.hub.service.security.Policy;
 public class Server {
     public static final String ATTR_ORGANISATION = "organisation";
 
-    public static void setup(Context ctx, SessionFacade sessionFacade, UserSessionFacade userSessionFacade, OrganisationFacade organisationFacade, SecurityFacade securityFacade) {
+    public static void setup(Context ctx, UserSessionFacade userSessionFacade, OrganisationFacade organisationFacade, SecurityFacade securityFacade) {
         String host = ctx.header("host");
+        SessionFacade sessionFacade = new SessionFacade(ctx);
 
         organisationFacade.findFromHostName(host)
                 .ifPresent(organisation -> {
-                    sessionFacade.store(ctx, organisation);
+                    sessionFacade.store(organisation);
 
                     String authHeader = ctx.header("authorization");
                     userSessionFacade.findFromSessionKey(organisation, authHeader)
                             .ifPresentOrElse(userDetailRecord -> {
-                                        sessionFacade.store(ctx, userDetailRecord);
+                                        sessionFacade.store(userDetailRecord);
 
                                         Policy combinedRoleForUser = securityFacade.getCombinedRoleForUser(userDetailRecord); //TODO I need the bloody config
-                                        sessionFacade.store(ctx, combinedRoleForUser);
+                                        sessionFacade.store(combinedRoleForUser);
                                     },
                                     () -> {
                                         Policy combinedRoleForUser = securityFacade.getDenyAllPolicy();
-                                        sessionFacade.store(ctx, combinedRoleForUser);
+                                        sessionFacade.store(combinedRoleForUser);
                                     });
                 });
     }

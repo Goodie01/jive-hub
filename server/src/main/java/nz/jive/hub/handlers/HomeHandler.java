@@ -1,13 +1,13 @@
 package nz.jive.hub.handlers;
 
 import io.javalin.http.Context;
-import io.javalin.http.Handler;
 import nz.jive.hub.api.HomeResp;
 import nz.jive.hub.api.MenuItem;
 import nz.jive.hub.api.domain.User;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.facade.MenuFacade;
 import nz.jive.hub.facade.SessionFacade;
+import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.Policy;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,24 +16,22 @@ import java.util.SortedSet;
 /**
  * @author Goodie
  */
-public class HomeHandler implements Handler {
+public class HomeHandler implements InternalHandler {
     private final MenuFacade menuFacade;
-    private final SessionFacade sessionFacade;
 
-    public HomeHandler(MenuFacade menuFacade, SessionFacade sessionFacade) {
+    public HomeHandler(MenuFacade menuFacade) {
         this.menuFacade = menuFacade;
-        this.sessionFacade = sessionFacade;
     }
 
     @Override
-    public void handle(@NotNull Context ctx) throws Exception {
+    public void handle(@NotNull Context ctx, SessionFacade sessionFacade, SecurityValidationService securityValidationService) throws Exception {
         //Object o = ctx.bodyAsClass(Object.class);
-        OrganisationRecord organisation = sessionFacade.organisation(ctx).orElseThrow();
-        Policy userPolicy = sessionFacade.policy(ctx).orElseThrow();
+        OrganisationRecord organisation = sessionFacade.organisation().orElseThrow();
+        Policy userPolicy = sessionFacade.policy().orElseThrow();
 
-        SortedSet<MenuItem> menuItems = menuFacade.buildMenu(organisation, userPolicy);
+        SortedSet<MenuItem> menuItems = menuFacade.buildMenu(organisation, securityValidationService);
 
-        User user = sessionFacade.userRecord(ctx)
+        User user = sessionFacade.userRecord()
                 .map(u -> new User(u.getId(), u.getName(), u.getPreferredName(), u.getEmail()))
                 .orElse(null);
 

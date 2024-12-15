@@ -6,13 +6,13 @@ import java.util.Objects;
 /**
  * @author Goodie
  */
-public record Statement(Effect effect, List<String> action, List<String> resource) {
-    public static Statement allow(final String action, final String resource) {
-        return new Statement(Effect.ALLOW, List.of(action), List.of(resource));
+public record Statement(Effect effect, String namespace, List<String> action, List<String> resource) {
+    public static Statement allow(final String namespace, final String action, final String resource) {
+        return new Statement(Effect.ALLOW, namespace, List.of(action), List.of(resource));
     }
 
-    public static Statement deny(final String action, final String resource) {
-        return new Statement(Effect.DENY, List.of(action), List.of(resource));
+    public static Statement deny(final String namespace, final String action, final String resource) {
+        return new Statement(Effect.DENY, namespace, List.of(action), List.of(resource));
     }
 
     @Override

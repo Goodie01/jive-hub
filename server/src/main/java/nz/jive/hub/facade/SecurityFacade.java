@@ -15,7 +15,7 @@ import java.util.Set;
  * @author Goodie
  */
 public class SecurityFacade {
-    private static final Policy DENY_ALL = Policy.of("Default", Statement.deny("*", "*"));
+    private static final Policy DENY_ALL = Policy.of("Default deny all", Statement.deny("*", "*", "*"));
     private final DatabaseService databaseService;
     private final SecurityRepository securityRepository;
     private final ObjectMapper objectMapper;
