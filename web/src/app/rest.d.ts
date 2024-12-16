@@ -1,9 +1,15 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 3.2.1263 on 2024-11-29 22:10:15.
+// Generated using typescript-generator version 3.2.1263 on 2024-12-16 20:06:12.
 
 export interface AdminQueryResp {
-  parameters: { [index: string]: string };
+  parameters: ConfigurationValue[];
+}
+
+export interface ConfigurationValue {
+  name: string;
+  value: string;
+  writeable: boolean;
 }
 
 export interface HomeResp {

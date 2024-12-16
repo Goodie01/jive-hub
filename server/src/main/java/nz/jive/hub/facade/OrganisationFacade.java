@@ -75,7 +75,7 @@ public class OrganisationFacade {
             hostsRepository.addHostName(configuration, organisation, hostName);
 
             String nameSpace = SecurityUtils.namespace(organisation);
-            Policy adminRole = securityRepository.save(configuration, organisation.getId(), Policy.of("Admin", Statement.allow(nameSpace, "*", ".*")));
+            Policy adminRole = securityRepository.save(configuration, organisation.getId(), Policy.of("Admin", Statement.allow(nameSpace, "*", "*")));
             securityRepository.assignRole(configuration, userDetailRecord, adminRole);
         });
     }

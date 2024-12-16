@@ -18,21 +18,25 @@ public class Server {
         SessionFacade sessionFacade = new SessionFacade(ctx);
 
         organisationFacade.findFromHostName(host)
-                .ifPresent(organisation -> {
-                    sessionFacade.store(organisation);
+                .ifPresentOrElse(organisation -> {
+                            sessionFacade.store(organisation);
 
-                    String authHeader = ctx.header("authorization");
-                    userSessionFacade.findFromSessionKey(organisation, authHeader)
-                            .ifPresentOrElse(userDetailRecord -> {
-                                        sessionFacade.store(userDetailRecord);
+                            String authHeader = ctx.header("authorization");
+                            userSessionFacade.findFromSessionKey(organisation, authHeader)
+                                    .ifPresentOrElse(userDetailRecord -> {
+                                                sessionFacade.store(userDetailRecord);
 
-                                        Policy combinedRoleForUser = securityFacade.getCombinedRoleForUser(userDetailRecord); //TODO I need the bloody config
-                                        sessionFacade.store(combinedRoleForUser);
-                                    },
-                                    () -> {
-                                        Policy combinedRoleForUser = securityFacade.getDenyAllPolicy();
-                                        sessionFacade.store(combinedRoleForUser);
-                                    });
-                });
+                                                Policy combinedRoleForUser = securityFacade.getCombinedRoleForUser(userDetailRecord); //TODO I need the bloody config
+                                                sessionFacade.store(combinedRoleForUser);
+                                            },
+                                            () -> {
+                                                Policy combinedRoleForUser = securityFacade.getDenyAllPolicy();
+                                                sessionFacade.store(combinedRoleForUser);
+                                            });
+                        },
+                        () -> {
+                            Policy combinedRoleForUser = securityFacade.getDenyAllPolicy();
+                            sessionFacade.store(combinedRoleForUser);
+                        });
     }
 }

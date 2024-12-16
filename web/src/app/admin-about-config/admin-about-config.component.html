@@ -6,9 +6,17 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let value of values | keyvalue">
-        <td>{{value.key}}</td>
-        <td><input type="text" name="{{value.key}}" value="{{value.value}}" size="60"></td>
+    <tr *ngFor="let value of values">
+        <td>{{value.name}}</td>
+        <td><input type="text" name="{{value.name}}" value="{{value.value}}" [disabled]="!value.writeable" size="60" (change)="value.modified = true"></td>
     </tr>
   </tbody>
+  <tfoot *ngIf="showSaveInput()">
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" value="Save"/>
+      </td>
+    </tr>
+  </tfoot>
 </table>

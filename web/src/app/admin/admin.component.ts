@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {ApiDataCacheService} from '../api-data-cache.service';
 import {RouterLink, RouterOutlet} from '@angular/router';
+import {ConfigurationValue} from '../rest';
 
 @Component({
   selector: 'app-admin',
@@ -13,7 +14,7 @@ import {RouterLink, RouterOutlet} from '@angular/router';
   styleUrl: './admin.component.css'
 })
 export class AdminComponent {
-  private values: { [p: string]: string } = {};
+  values: ConfigurationValue[] = [];
 
   constructor(private apiCacheService: ApiDataCacheService) {
     apiCacheService.adminQueryResp.subscribe(value => {

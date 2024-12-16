@@ -23,27 +23,27 @@ public class ParameterStoreRepository {
     }
 
     public ParameterMap getSystemParameters(final Configuration configuration) {
-        return getUserParameters(configuration, null, null);
+        return getParameters(configuration, null, null);
     }
 
     public ParameterMap getOrganizationParameters(final Configuration configuration, final Integer organizationId) {
-        return getUserParameters(configuration, organizationId, null);
+        return getParameters(configuration, organizationId, null);
     }
 
     public ParameterMap getUserParameters(final Configuration configuration, final Integer organisationId, final Integer userId) {
+        return getParameters(configuration, organisationId, userId);
+    }
+
+    private ParameterMap getParameters(final Configuration configuration, final Integer organisationId, final Integer userId) {
         Map<String, String> collect = DSL
                 .using(configuration)
                 .selectFrom(PARAMETERS)
                 .where(PARAMETERS.USER_ID
                         .eq(userId)
-                        .or(DSL
-                                .val(userId)
-                                .isNull())
-                        .and(PARAMETERS.ORGANISATION_ID
-                                .eq(organisationId)
-                                .or(DSL
-                                        .val(organisationId)
-                                        .isNull())))
+                        .or(DSL.val(userId).isNull()))
+                .and(PARAMETERS.ORGANISATION_ID
+                        .eq(organisationId)
+                        .or(DSL.val(organisationId).isNull()))
                 .stream()
                 .collect(Collectors.toMap(
                         ParametersRecord::getParameterName,
