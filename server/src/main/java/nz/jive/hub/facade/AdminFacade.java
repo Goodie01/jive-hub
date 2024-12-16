@@ -3,13 +3,15 @@ package nz.jive.hub.facade;
 import nz.jive.hub.Parameters;
 import nz.jive.hub.Repository.ParameterStoreRepository;
 import nz.jive.hub.Repository.parameters.ParameterMap;
+import nz.jive.hub.api.ConfigurationValue;
 import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.SecurityValues;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +28,7 @@ public class AdminFacade {
         this.parameterStoreRepository = parameterStoreRepository;
     }
 
-    public Map<String, String> getValues(
+    public @NotNull Set<ConfigurationValue> getValues(
             final OrganisationRecord organisation,
             final SecurityValidationService securityValidationService
     ) {
@@ -34,12 +36,11 @@ public class AdminFacade {
 
         return Stream.of(Parameters.values())
                 .filter(parameter -> StringUtils.startsWith(parameter.getName(), "organisation."))
-                .filter(parameter -> {
-                    return securityValidationService.check(SecurityValues.ADMIN_VIEW_VALUE, parameter.getName());
-                })
-                .collect(Collectors.toMap(
-                        Parameters::getName,
-                        organizationParameters::stringVal
-                ));
+                .filter(parameter -> securityValidationService.check(SecurityValues.ADMIN_VIEW_VALUE, parameter.getName()))
+                .map(parameter -> new ConfigurationValue(
+                        parameter.getName(),
+                        organizationParameters.stringVal(parameter),
+                        securityValidationService.check(SecurityValues.ADMIN_WRITE_VALUE, parameter.getName())))
+                .collect(Collectors.toSet());
     }
 }

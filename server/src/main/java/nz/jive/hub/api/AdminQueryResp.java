@@ -1,9 +1,9 @@
 package nz.jive.hub.api;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Goodie
  */
-public record AdminQueryResp(Map<String, String> parameters) {
+public record AdminQueryResp(Set<ConfigurationValue> parameters) {
 }

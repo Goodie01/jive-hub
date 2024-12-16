@@ -6,6 +6,7 @@ package nz.jive.hub.service.security;
 public class SecurityValues {
     public static String ADMIN_VIEW = "admin.view";
     public static String ADMIN_VIEW_VALUE = "admin.view.value";
+    public static String ADMIN_WRITE_VALUE = "admin.write.value";
     public static String SCHOOL_MANAGE_VIEW = "school.manage.view";
     public static String EVENT_MANAGE_VIEW = "event.manage.view";
 }
