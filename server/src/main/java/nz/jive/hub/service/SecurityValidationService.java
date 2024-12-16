@@ -5,6 +5,8 @@ import nz.jive.hub.service.security.Policy;
 import nz.jive.hub.service.security.SecurityMatcher;
 import nz.jive.hub.service.security.Statement;
 
+import java.util.Objects;
+
 /**
  * @author Goodie
  */
@@ -13,8 +15,8 @@ public class SecurityValidationService {
     private final String nameSpace;
 
     public SecurityValidationService(Policy policy, String nameSpace) {
-        this.policy = policy;
-        this.nameSpace = nameSpace;
+        this.policy = Objects.requireNonNull(policy);
+        this.nameSpace = Objects.requireNonNull(nameSpace);
     }
 
     public boolean check(final String action) {
@@ -35,15 +37,11 @@ public class SecurityValidationService {
 
 
     public boolean check(final String action, final String resource) {
+        Objects.requireNonNull(action);
+
         boolean allowed = false;
         for (Statement statement : policy.statements()) {
-            boolean actionMatches = statement
-                    .action()
-                    .stream()
-                    .anyMatch(s -> SecurityMatcher.match(s, action));
-            boolean resourceMatches = checkIfResourceMatches(resource, statement);
-
-            if (actionMatches && resourceMatches) {
+            if (checkIfNamespaceMatches(statement) && checkIfActionMatches(action, statement) && checkIfResourceMatches(resource, statement)) {
                 if (statement.effect() == Effect.DENY) {
                     return false;
                 } else {
@@ -53,6 +51,17 @@ public class SecurityValidationService {
         }
 
         return allowed;
+    }
+
+    private static boolean checkIfActionMatches(String action, Statement statement) {
+        return statement
+                .action()
+                .stream()
+                .anyMatch(s -> SecurityMatcher.match(s, action));
+    }
+
+    private boolean checkIfNamespaceMatches(Statement statement) {
+        return SecurityMatcher.match(statement.namespace(), nameSpace);
     }
 
     private static boolean checkIfResourceMatches(String resource, Statement statement) {
