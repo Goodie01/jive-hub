@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {AdminQueryResp, HomeResp, LoginReq, LoginResp, PageResp} from "./rest";
+import {AdminQueryResp, AdminUpdateReq, HomeResp, LoginReq, LoginResp, PageResp, UpdateValue} from "./rest";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,13 @@ export class ApiService {
       email: email
     };
     return this.http.post<LoginResp>("api/v1/login", loginRequest, this.generateHttpOptions())
+  }
+
+  updateAdmin(values: UpdateValue[]): Observable<any> {
+    var updateRequest: AdminUpdateReq = {
+      values: values
+    }
+    return this.http.post<any>("api/v1/admin", updateRequest, this.generateHttpOptions())
   }
 
   private generateHttpOptions() {

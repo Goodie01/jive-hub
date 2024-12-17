@@ -1,13 +1,17 @@
 import {Component} from '@angular/core';
 import {ApiDataCacheService} from '../api-data-cache.service';
 import {NgForOf, NgIf} from '@angular/common';
+import {ApiService} from '../api.service';
+import {UpdateValue} from '../rest';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-admin-about-config',
   standalone: true,
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    FormsModule
   ],
   templateUrl: './admin-about-config.component.html',
   styleUrl: './admin-about-config.component.css'
@@ -16,7 +20,7 @@ export class AdminAboutConfigComponent {
   values: ModifiableConfigurationValue[] = [];
 
 
-  constructor(private api: ApiDataCacheService) {
+  constructor(private api: ApiDataCacheService, private apiService: ApiService) {
     api.adminQueryResp.subscribe(value => {
       this.values = value.parameters
         .map(value1 => {
@@ -28,6 +32,22 @@ export class AdminAboutConfigComponent {
   showSaveInput():boolean {
     return this.values.map(value => value.modified)
       .some(value => value);
+  }
+
+  saveChanges() {
+    var values: UpdateValue[] = this.values.filter(value => value.modified)
+      .map(value => {
+        return {
+          name: value.name,
+          value: value.value
+        }
+      })
+
+    this.apiService.updateAdmin(values)
+      .subscribe(value => {
+        this.api.adminQueryResp.refresh(); //TODO find a way to set this from outside
+        this.api.homeResponse.refresh();
+    })
   }
 }
 

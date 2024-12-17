@@ -9,12 +9,9 @@ import nz.jive.hub.database.Migrator;
 import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
 import nz.jive.hub.service.server.ServerService;
-import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
 import java.util.Objects;
-
-import static nz.jive.hub.database.generated.Tables.ORGANISATION;
 
 /**
  * @author Goodie
@@ -72,15 +69,15 @@ public class Main {
         PageFacade pageFacade = new PageFacade(
                 databaseService,
                 pageRepository);
-        DSL.using(databaseService.getConfiguration())
-                .deleteFrom(ORGANISATION)
-                .execute();
-
-        organisationFacade.createOrganisation("This is a test",
-                "Thomas Goodwin",
-                "Thomas",
-                "jive-hub.test@goodwin.geek.nz"
-        );
+//        DSL.using(databaseService.getConfiguration())
+//                .deleteFrom(ORGANISATION)
+//                .execute();
+//
+//        organisationFacade.createOrganisation("This is a test",
+//                "Thomas Goodwin",
+//                "Thomas",
+//                "jive-hub.test@goodwin.geek.nz"
+//        );
 
 
         new ServerService().setUp(() -> Javalin.create(javalinConfig -> {
@@ -92,7 +89,7 @@ public class Main {
                 .post("api/v1/login", new LoginHandler(userSessionFacade))
                 .get("api/v1/home", new HomeHandler(menuFacade))
                 .get("api/v1/admin", new AdminQueryHandler(adminFacade))
-                .post("api/v1/admin", new AdminQueryHandler(adminFacade))
+                .post("api/v1/admin", new AdminUpdateHandler(adminFacade))
                 .get("api/v1/pages/*", new PagesHandler(pageFacade))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }

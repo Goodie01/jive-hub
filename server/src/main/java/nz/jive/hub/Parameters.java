@@ -1,5 +1,7 @@
 package nz.jive.hub;
 
+import java.util.Arrays;
+
 /**
  * @author thomas.goodwin
  */
@@ -23,5 +25,12 @@ public enum Parameters {
 
     public String getDefaultValue() {
         return defaultValue;
+    }
+
+    public static Parameters fromString(String name) {
+        return Arrays.stream(Parameters.values())
+                .filter(parameters -> parameters.getName().equals(name))
+                .findFirst()
+                .orElseThrow();
     }
 }
