@@ -6,9 +6,12 @@ import nz.jive.hub.Repository.ParameterStoreRepository;
 import nz.jive.hub.Repository.parameters.ParameterMap;
 import nz.jive.hub.api.MenuItem;
 import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.database.generated.tables.Organisation;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.SecurityValues;
+import nz.jive.hub.service.server.ServerContext;
+
 import org.jooq.Configuration;
 
 import java.util.SortedSet;
@@ -29,7 +32,8 @@ public class MenuFacade {
         this.pageService = pageService;
     }
 
-    public SortedSet<MenuItem> buildMenu(OrganisationRecord organisation, SecurityValidationService securityValidationService) {
+    public SortedSet<MenuItem> buildMenu(ServerContext serverContext) {
+        OrganisationRecord organisation = serverContext.organisation();
         Configuration configuration = databaseService.getConfiguration();
         ParameterMap organizationParameters = parameterStoreRepository.getOrganizationParameters(configuration, organisation.getId());
 
@@ -37,7 +41,7 @@ public class MenuFacade {
         if (organizationParameters.boolVal(Parameters.SCHOOL_ENABLED)) {
             menuItems.add(new MenuItem("School", "/school/", 95));
 
-            if (securityValidationService.check(SecurityValues.SCHOOL_MANAGE_VIEW)) {
+            if (serverContext.check(SecurityValues.SCHOOL_MANAGE_VIEW)) {
                 menuItems.add(new MenuItem("School Manage", "/school/manage/", 96));
             }
         }
@@ -45,12 +49,12 @@ public class MenuFacade {
         if (organizationParameters.boolVal(Parameters.EVENT_ENABLED)) {
             menuItems.add(new MenuItem("Events", "/events/", 97));
 
-            if (securityValidationService.check(SecurityValues.EVENT_MANAGE_VIEW)) {
+            if (serverContext.check(SecurityValues.EVENT_MANAGE_VIEW)) {
                 menuItems.add(new MenuItem("Events Manage", "/events/manage/", 98));
             }
         }
 
-        if (securityValidationService.check(SecurityValues.ADMIN_VIEW)) {
+        if (serverContext.check(SecurityValues.ADMIN_VIEW)) {
             menuItems.add(new MenuItem("Admin", "/admin/", 99));
         }
 

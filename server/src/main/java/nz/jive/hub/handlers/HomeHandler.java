@@ -9,6 +9,8 @@ import nz.jive.hub.facade.MenuFacade;
 import nz.jive.hub.facade.SessionFacade;
 import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.Policy;
+import nz.jive.hub.service.server.ServerContext;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.SortedSet;
@@ -24,17 +26,15 @@ public class HomeHandler implements InternalHandler {
     }
 
     @Override
-    public void handle(@NotNull Context ctx, SessionFacade sessionFacade, SecurityValidationService securityValidationService) throws Exception {
-        //Object o = ctx.bodyAsClass(Object.class);
-        OrganisationRecord organisation = sessionFacade.organisation().orElseThrow();
-        Policy userPolicy = sessionFacade.policy().orElseThrow();
+    public void handle(ServerContext serverContext) throws Exception {
+        OrganisationRecord organisation = serverContext.organisation();
 
-        SortedSet<MenuItem> menuItems = menuFacade.buildMenu(organisation, securityValidationService);
+        SortedSet<MenuItem> menuItems = menuFacade.buildMenu(serverContext);
 
-        User user = sessionFacade.userRecord()
+        User user = serverContext.userRecord()
                 .map(u -> new User(u.getId(), u.getName(), u.getPreferredName(), u.getEmail()))
                 .orElse(null);
 
-        ctx.json(new HomeResp(organisation.getDisplayName(), menuItems, user));
+        serverContext.getCtx().json(new HomeResp(organisation.getDisplayName(), menuItems, user));
     }
 }

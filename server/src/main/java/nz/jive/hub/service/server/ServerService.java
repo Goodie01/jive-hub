@@ -1,9 +1,10 @@
-package nz.jive.hub.service;
+package nz.jive.hub.service.server;
 
 import io.javalin.Javalin;
 import io.javalin.http.HandlerType;
 import nz.jive.hub.facade.SessionFacade;
 import nz.jive.hub.handlers.InternalHandler;
+import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.Policy;
 import nz.jive.hub.service.security.SecurityUtils;
 
@@ -28,7 +29,7 @@ public class ServerService {
             Policy policy = sessionFacade.policy().orElseThrow();
             String nameSpace = SecurityUtils.namespace(sessionFacade.organisation().orElseThrow());
             SecurityValidationService securityValidationService = new SecurityValidationService(policy, nameSpace);
-            handler.handle(ctx, sessionFacade, securityValidationService);
+            handler.handle(new ServerContext(ctx, sessionFacade, securityValidationService));
         });
 
         return this;
@@ -39,7 +40,7 @@ public class ServerService {
             SessionFacade sessionFacade = new SessionFacade(ctx);
             String nameSpace = SecurityUtils.namespace(sessionFacade.organisation().orElseThrow());
             SecurityValidationService securityValidationService = new SecurityValidationService(sessionFacade.policy().orElseThrow(), nameSpace);
-            handler.handle(ctx, sessionFacade, securityValidationService);
+            handler.handle(new ServerContext(ctx, sessionFacade, securityValidationService));
         });
 
         return this;

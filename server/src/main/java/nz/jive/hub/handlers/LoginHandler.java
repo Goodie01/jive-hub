@@ -8,6 +8,8 @@ import nz.jive.hub.database.generated.tables.records.UserSessionRecord;
 import nz.jive.hub.facade.SessionFacade;
 import nz.jive.hub.facade.UserSessionFacade;
 import nz.jive.hub.service.SecurityValidationService;
+import nz.jive.hub.service.server.ServerContext;
+
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,13 +23,13 @@ public class LoginHandler implements InternalHandler {
     }
 
     @Override
-    public void handle(@NotNull Context ctx, SessionFacade sessionFacade, SecurityValidationService securityValidationService) throws Exception {
-        LoginReq loginReq = ctx.bodyAsClass(LoginReq.class);
+    public void handle(ServerContext serverContext) throws Exception {
+        LoginReq loginReq = serverContext.getCtx().bodyAsClass(LoginReq.class);
 
-        OrganisationRecord organisation = sessionFacade.organisation().orElseThrow();
+        OrganisationRecord organisation = serverContext.organisation();
 
         UserSessionRecord userSessionRecord = userSessionFacade.createSession(organisation, loginReq.email());
 
-        ctx.json(new LoginResp(userSessionRecord.getSessionKey()));
+        serverContext.getCtx().json(new LoginResp(userSessionRecord.getSessionKey()));
     }
 }

@@ -8,7 +8,7 @@ import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
 import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
-import nz.jive.hub.service.ServerService;
+import nz.jive.hub.service.server.ServerService;
 import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
@@ -92,6 +92,7 @@ public class Main {
                 .post("api/v1/login", new LoginHandler(userSessionFacade))
                 .get("api/v1/home", new HomeHandler(menuFacade))
                 .get("api/v1/admin", new AdminQueryHandler(adminFacade))
+                .post("api/v1/admin", new AdminQueryHandler(adminFacade))
                 .get("api/v1/pages/*", new PagesHandler(pageFacade))
                 .start(JiveConfiguration.SERVER_PORT.intVal());
     }

@@ -16,6 +16,7 @@ import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.service.SecurityValidationService;
 import nz.jive.hub.service.security.SecurityValues;
+import nz.jive.hub.service.server.ServerContext;
 import nz.jive.hub.utils.Duo;
 
 /**
@@ -31,27 +32,26 @@ public class AdminFacade {
         this.parameterStoreRepository = parameterStoreRepository;
     }
 
-    public Set<AdminQueryResp.ConfigurationValue> getAllValues(final OrganisationRecord organisation,
-            final SecurityValidationService securityValidationService) {
+    public Set<AdminQueryResp.ConfigurationValue> getAllValues(final ServerContext serverContext) {
         ParameterMap organizationParameters = parameterStoreRepository.getOrganizationParameters(databaseService.getConfiguration(),
-                organisation.getId());
+                serverContext.organisation().getId());
 
         return Stream.of(Parameters.values())
                 .filter(parameter -> StringUtils.startsWith(parameter.getName(), "organisation."))
-                .filter(parameter -> securityValidationService.check(SecurityValues.ADMIN_VIEW_VALUE, parameter.getName()))
+                .filter(parameter -> serverContext.check(SecurityValues.ADMIN_VIEW_VALUE, parameter.getName()))
                 .map(parameter ->
                         new AdminQueryResp.ConfigurationValue(parameter.getName(), organizationParameters.stringVal(parameter),
-                        securityValidationService.check(SecurityValues.ADMIN_WRITE_VALUE, parameter.getName())))
+                        serverContext.check(SecurityValues.ADMIN_WRITE_VALUE, parameter.getName())))
                 .collect(Collectors.toSet());
     }
 
-    public void updateValues(OrganisationRecord organisation, SecurityValidationService securityValidationService, AdminUpdateReq adminUpdateReq) {
-        ParameterMap organizationParameters = parameterStoreRepository.getOrganizationParameters(databaseService.getConfiguration(), organisation.getId());
+    public void updateValues(ServerContext serverContext, AdminUpdateReq adminUpdateReq) {
+        ParameterMap organizationParameters = parameterStoreRepository.getOrganizationParameters(databaseService.getConfiguration(), serverContext.organisation().getId());
 
         adminUpdateReq.values().stream()
                 .map(updateValue -> {
                     Parameters parameter = Parameters.valueOf(updateValue.name());
-                    securityValidationService.checkThrows(SecurityValues.ADMIN_WRITE_VALUE, parameter.getName());
+                    serverContext.checkThrows(SecurityValues.ADMIN_WRITE_VALUE, parameter.getName());
                     return new Duo<>(parameter, updateValue.value());
                 })
                 .forEach(updateValue -> organizationParameters.set(updateValue.one(), updateValue.two()));

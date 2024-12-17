@@ -1,11 +1,9 @@
 package nz.jive.hub.handlers;
 
-import io.javalin.http.Context;
-import nz.jive.hub.database.DatabaseService;
-import nz.jive.hub.facade.SessionFacade;
-import nz.jive.hub.service.SecurityValidationService;
-import org.jetbrains.annotations.NotNull;
 import org.jooq.impl.DSL;
+
+import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.service.server.ServerContext;
 
 /**
  * @author Goodie
@@ -18,19 +16,15 @@ public class HealthCheckHandler implements InternalHandler {
     }
 
     @Override
-    public void handle(@NotNull Context ctx, SessionFacade sessionFacade, SecurityValidationService securityValidationService) throws Exception {
-        Integer i = DSL
-                .using(databaseService.getConfiguration())
-                .selectOne()
-                .fetchOne()
-                .value1();
+    public void handle(ServerContext serverContext) throws Exception {
+        Integer i = DSL.using(databaseService.getConfiguration()).selectOne().fetchOne().value1();
 
         if (i == 1) {
-            ctx.result("OK");
-            ctx.status(200);
+            serverContext.getCtx().result("OK");
+            serverContext.getCtx().status(200);
         } else {
-            ctx.result("Oh no");
-            ctx.status(500);
+            serverContext.getCtx().result("Oh no");
+            serverContext.getCtx().status(500);
         }
     }
 }
