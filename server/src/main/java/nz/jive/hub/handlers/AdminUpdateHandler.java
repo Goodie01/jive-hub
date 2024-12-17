@@ -26,10 +26,9 @@ public class AdminUpdateHandler implements InternalHandler {
     @Override
     public void handle(ServerContext serverContext) throws Exception {
         AdminUpdateReq adminUpdateReq = serverContext.getCtx().bodyAsClass(AdminUpdateReq.class);
-        OrganisationRecord organisation = serverContext.organisation();
 
         adminFacade.updateValues(serverContext, adminUpdateReq);
-        Set<AdminQueryResp.ConfigurationValue> adminParameterValues = adminFacade.getAllValues(organisation, securityValidationService);
+        Set<AdminQueryResp.ConfigurationValue> adminParameterValues = adminFacade.getAllValues(serverContext);
 
         serverContext.getCtx().json(new AdminQueryResp(adminParameterValues));
     }
