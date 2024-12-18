@@ -57,7 +57,7 @@ create table user_has_role
 create table parameters
 (
     id                INT         not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    organisation_id   int references organisation (id) on update cascade on delete cascade,
+    organisation_id   int         not null references organisation (id) on update cascade on delete cascade,
     user_id           int references user_detail (id) on update cascade on delete cascade,
     parameter_name    TEXT        not null,
     value             TEXT        not null,
@@ -84,4 +84,16 @@ create table host_names
 (
     host            text not null unique,
     organisation_id int references organisation (id) on update cascade on delete cascade
-)
+);
+
+create table event
+(
+    id                INT         not null PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    organisation_id   int references organisation (id) on update cascade on delete cascade,
+    title             text        not null,
+    by_line           text        not null,
+    start_date        TIMESTAMPTZ not null,
+    end_date          TIMESTAMPTZ not null,
+    created_date      TIMESTAMPTZ not null,
+    last_updated_date TIMESTAMPTZ
+);

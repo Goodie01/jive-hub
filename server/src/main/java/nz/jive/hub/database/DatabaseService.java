@@ -1,10 +1,13 @@
 package nz.jive.hub.database;
 
 import nz.jive.hub.JiveConfiguration;
+import nz.jive.hub.perf.TimingResults;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.Record;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultConfiguration;
+import org.jooq.tools.StopWatch;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,8 +27,14 @@ public class DatabaseService {
         configuration = new DefaultConfiguration()
                 .set(connection)
                 .set(SQLDialect.POSTGRES)
-                .set(new InsertListener())
-                .set(new Logger());
+                .set(new ExecuteListenerProvider() {
+                    @NotNull
+                    @Override
+                    public ExecuteListener provide() {
+                        return new Logger();
+                    }
+                })
+                .set(new InsertListener());
 
     }
 
@@ -34,9 +43,17 @@ public class DatabaseService {
     }
 
     private static class Logger implements ExecuteListener {
+        StopWatch stopWatch;
+
+        @Override
+        public void executeStart(ExecuteContext ctx) {
+            stopWatch = new StopWatch();
+        }
+
         @Override
         public void executeEnd(ExecuteContext ctx) {
-            System.out.println(ctx.sql());
+            long split = stopWatch.split();
+            TimingResults.getInstance().addInvocation(ctx.sql(), split);
         }
     }
 

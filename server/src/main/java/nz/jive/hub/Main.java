@@ -8,10 +8,14 @@ import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
 import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
+import nz.jive.hub.perf.TimingResults;
 import nz.jive.hub.service.server.ServerService;
+import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
 import java.util.Objects;
+
+import static nz.jive.hub.database.generated.Tables.ORGANISATION;
 
 /**
  * @author Goodie
@@ -69,22 +73,29 @@ public class Main {
         PageFacade pageFacade = new PageFacade(
                 databaseService,
                 pageRepository);
-//        DSL.using(databaseService.getConfiguration())
-//                .deleteFrom(ORGANISATION)
-//                .execute();
-//
-//        organisationFacade.createOrganisation("This is a test",
-//                "Thomas Goodwin",
-//                "Thomas",
-//                "jive-hub.test@goodwin.geek.nz"
-//        );
 
+        Integer i = DSL.using(databaseService.getConfiguration())
+                .selectCount()
+                .from(ORGANISATION)
+                .fetchOne(0, int.class);
+
+        if (i == 0) {
+            organisationFacade.createOrganisation("This is a test",
+                    "Thomas Goodwin",
+                    "Thomas",
+                    "jive-hub.test@goodwin.geek.nz"
+            );
+        }
+
+        TimingResults.getInstance().dumpCurrent();
 
         new ServerService().setUp(() -> Javalin.create(javalinConfig -> {
-                            javalinConfig.useVirtualThreads = true;
-                            javalinConfig.showJavalinBanner = false;
-                        })
-                        .before(ctx -> Server.setup(ctx, userSessionFacade, organisationFacade, securityFacade)))
+                                    javalinConfig.useVirtualThreads = true;
+                                    javalinConfig.showJavalinBanner = false;
+                                })
+                                .before(ctx -> Server.setup(ctx, userSessionFacade, organisationFacade, securityFacade))
+                                .after(_ -> TimingResults.getInstance().dumpCurrent())
+                )
                 .get("api/health", new HealthCheckHandler(databaseService))
                 .post("api/v1/login", new LoginHandler(userSessionFacade))
                 .get("api/v1/home", new HomeHandler(menuFacade))
