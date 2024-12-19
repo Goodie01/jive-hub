@@ -4,6 +4,7 @@
 package nz.jive.hub.database.generated;
 
 
+import nz.jive.hub.database.generated.tables.Event;
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.HostNames;
 import nz.jive.hub.database.generated.tables.Organisation;
@@ -20,6 +21,11 @@ import nz.jive.hub.database.generated.tables.UserSession;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes", "this-escape" })
 public class Tables {
+
+    /**
+     * The table <code>public.event</code>.
+     */
+    public static final Event EVENT = Event.EVENT;
 
     /**
      * The table <code>public.flyway_schema_history</code>.

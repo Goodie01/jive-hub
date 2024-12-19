@@ -4,6 +4,7 @@
 package nz.jive.hub.database.generated;
 
 
+import nz.jive.hub.database.generated.tables.Event;
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.HostNames;
 import nz.jive.hub.database.generated.tables.Organisation;
@@ -13,6 +14,7 @@ import nz.jive.hub.database.generated.tables.Role;
 import nz.jive.hub.database.generated.tables.UserDetail;
 import nz.jive.hub.database.generated.tables.UserHasRole;
 import nz.jive.hub.database.generated.tables.UserSession;
+import nz.jive.hub.database.generated.tables.records.EventRecord;
 import nz.jive.hub.database.generated.tables.records.FlywaySchemaHistoryRecord;
 import nz.jive.hub.database.generated.tables.records.HostNamesRecord;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
@@ -41,6 +43,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<EventRecord> EVENT_PKEY = Internal.createUniqueKey(Event.EVENT, DSL.name("event_pkey"), new TableField[] { Event.EVENT.ID }, true);
     public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<HostNamesRecord> HOST_NAMES_HOST_KEY = Internal.createUniqueKey(HostNames.HOST_NAMES, DSL.name("host_names_host_key"), new TableField[] { HostNames.HOST_NAMES.HOST }, true);
     public static final UniqueKey<OrganisationRecord> ORGANISATION_PKEY = Internal.createUniqueKey(Organisation.ORGANISATION, DSL.name("organisation_pkey"), new TableField[] { Organisation.ORGANISATION.ID }, true);
@@ -59,8 +62,10 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<EventRecord, OrganisationRecord> EVENT__EVENT_ORGANISATION_ID_FKEY = Internal.createForeignKey(Event.EVENT, DSL.name("event_organisation_id_fkey"), new TableField[] { Event.EVENT.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<HostNamesRecord, OrganisationRecord> HOST_NAMES__HOST_NAMES_ORGANISATION_ID_FKEY = Internal.createForeignKey(HostNames.HOST_NAMES, DSL.name("host_names_organisation_id_fkey"), new TableField[] { HostNames.HOST_NAMES.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<PageRecord, OrganisationRecord> PAGE__PAGE_ORGANISATION_ID_FKEY = Internal.createForeignKey(Page.PAGE, DSL.name("page_organisation_id_fkey"), new TableField[] { Page.PAGE.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
+    public static final ForeignKey<ParametersRecord, EventRecord> PARAMETERS__PARAMETERS_EVENT_ID_FKEY = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("parameters_event_id_fkey"), new TableField[] { Parameters.PARAMETERS.EVENT_ID }, Keys.EVENT_PKEY, new TableField[] { Event.EVENT.ID }, true);
     public static final ForeignKey<ParametersRecord, OrganisationRecord> PARAMETERS__PARAMETERS_ORGANISATION_ID_FKEY = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("parameters_organisation_id_fkey"), new TableField[] { Parameters.PARAMETERS.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);
     public static final ForeignKey<ParametersRecord, UserDetailRecord> PARAMETERS__PARAMETERS_USER_ID_FKEY = Internal.createForeignKey(Parameters.PARAMETERS, DSL.name("parameters_user_id_fkey"), new TableField[] { Parameters.PARAMETERS.USER_ID }, Keys.USER_DETAIL_PKEY, new TableField[] { UserDetail.USER_DETAIL.ID }, true);
     public static final ForeignKey<RoleRecord, OrganisationRecord> ROLE__ROLE_ORGANISATION_ID_FKEY = Internal.createForeignKey(Role.ROLE, DSL.name("role_organisation_id_fkey"), new TableField[] { Role.ROLE.ORGANISATION_ID }, Keys.ORGANISATION_PKEY, new TableField[] { Organisation.ORGANISATION.ID }, true);

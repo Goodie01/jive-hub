@@ -1,4 +1,4 @@
-package nz.jive.hub.Repository.parameters;
+package nz.jive.hub.database.Repository.parameters;
 
 import nz.jive.hub.Parameters;
 

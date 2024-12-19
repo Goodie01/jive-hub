@@ -1,9 +1,9 @@
 package nz.jive.hub.facade;
 
 import nz.jive.hub.Parameters;
-import nz.jive.hub.Repository.*;
-import nz.jive.hub.Repository.parameters.ParameterMap;
 import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.database.Repository.*;
+import nz.jive.hub.database.Repository.parameters.ParameterMap;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.service.security.Policy;
@@ -45,17 +45,17 @@ public class OrganisationFacade {
         this.hostsRepository = hostsRepository;
     }
 
-    public void createOrganisation(final String orgDisplayName,
-                                   final String userName,
-                                   final String userPreferredName,
-                                   final String email) {
+    public OrganisationRecord createOrganisation(final String orgDisplayName,
+                                                 final String userName,
+                                                 final String userPreferredName,
+                                                 final String email) {
         if (!DISPLAY_NAME_VALIDATOR
                 .matcher(orgDisplayName)
                 .matches()) {
             throw new IllegalArgumentException(orgDisplayName + " is not a valid display name");
         }
 
-        DSL.using(databaseService.getConfiguration()).transaction(configuration -> {
+        return DSL.using(databaseService.getConfiguration()).transactionResult(configuration -> {
             OrganisationRecord organisation = organisationRepository.createOrganisation(configuration, orgDisplayName);
 
             pageRepository.save(
@@ -77,6 +77,8 @@ public class OrganisationFacade {
             String nameSpace = SecurityUtils.namespace(organisation);
             Policy adminRole = securityRepository.save(configuration, organisation.getId(), Policy.of("Admin", Statement.allow(nameSpace, "*", "*")));
             securityRepository.assignRole(configuration, userDetailRecord, adminRole);
+
+            return organisation;
         });
     }
 

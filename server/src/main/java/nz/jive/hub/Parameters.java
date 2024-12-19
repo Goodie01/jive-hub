@@ -7,6 +7,7 @@ import java.util.Arrays;
  */
 public enum Parameters {
     SYSTEM_HOST("system.host", "jive-hub.local"),
+    SYSTEM_TIMEZONE("system.timezone", "Pacific/Auckland"),
     SCHOOL_ENABLED("organisation.school.enabled", "false"),
     EVENT_ENABLED("organisation.event.enabled", "false"),
     ;

@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import nz.jive.hub.database.generated.Keys;
 import nz.jive.hub.database.generated.Public;
+import nz.jive.hub.database.generated.tables.Event.EventPath;
 import nz.jive.hub.database.generated.tables.HostNames.HostNamesPath;
 import nz.jive.hub.database.generated.tables.Page.PagePath;
 import nz.jive.hub.database.generated.tables.Parameters.ParametersPath;
@@ -156,6 +157,18 @@ public class Organisation extends TableImpl<OrganisationRecord> {
     @Override
     public UniqueKey<OrganisationRecord> getPrimaryKey() {
         return Keys.ORGANISATION_PKEY;
+    }
+
+    private transient EventPath _event;
+
+    /**
+     * Get the implicit to-many join path to the <code>public.event</code> table
+     */
+    public EventPath event() {
+        if (_event == null)
+            _event = new EventPath(this, null, Keys.EVENT__EVENT_ORGANISATION_ID_FKEY.getInverseKey());
+
+        return _event;
     }
 
     private transient HostNamesPath _hostNames;

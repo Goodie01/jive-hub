@@ -1,4 +1,4 @@
-package nz.jive.hub.Repository;
+package nz.jive.hub.database.Repository;
 
 import nz.jive.hub.api.MenuItem;
 import nz.jive.hub.database.generated.tables.records.PageRecord;

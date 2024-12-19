@@ -1,4 +1,4 @@
-package nz.jive.hub.Repository.parameters;
+package nz.jive.hub.database.Repository.parameters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

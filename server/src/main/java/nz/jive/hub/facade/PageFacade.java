@@ -1,7 +1,7 @@
 package nz.jive.hub.facade;
 
-import nz.jive.hub.Repository.PageRepository;
 import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.database.Repository.PageRepository;
 import nz.jive.hub.database.generated.tables.records.PageRecord;
 
 import java.util.Optional;

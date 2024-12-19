@@ -1,9 +1,10 @@
 package nz.jive.hub;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Goodie
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 public enum JiveConfiguration {
     DATABASE_JDBC,
     SERVER_PORT,
+    JAVALIN_DEBUG_LOGGING,
     ;
 
     public String valueOf() {

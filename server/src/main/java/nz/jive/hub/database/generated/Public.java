@@ -7,6 +7,7 @@ package nz.jive.hub.database.generated;
 import java.util.Arrays;
 import java.util.List;
 
+import nz.jive.hub.database.generated.tables.Event;
 import nz.jive.hub.database.generated.tables.FlywaySchemaHistory;
 import nz.jive.hub.database.generated.tables.HostNames;
 import nz.jive.hub.database.generated.tables.Organisation;
@@ -34,6 +35,11 @@ public class Public extends SchemaImpl {
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.event</code>.
+     */
+    public final Event EVENT = Event.EVENT;
 
     /**
      * The table <code>public.flyway_schema_history</code>.
@@ -96,6 +102,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
+            Event.EVENT,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             HostNames.HOST_NAMES,
             Organisation.ORGANISATION,

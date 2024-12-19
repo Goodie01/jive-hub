@@ -11,6 +11,7 @@ import java.util.List;
 
 import nz.jive.hub.database.generated.Keys;
 import nz.jive.hub.database.generated.Public;
+import nz.jive.hub.database.generated.tables.Event.EventPath;
 import nz.jive.hub.database.generated.tables.Organisation.OrganisationPath;
 import nz.jive.hub.database.generated.tables.UserDetail.UserDetailPath;
 import nz.jive.hub.database.generated.tables.records.ParametersRecord;
@@ -67,12 +68,17 @@ public class Parameters extends TableImpl<ParametersRecord> {
     /**
      * The column <code>public.parameters.organisation_id</code>.
      */
-    public final TableField<ParametersRecord, Integer> ORGANISATION_ID = createField(DSL.name("organisation_id"), SQLDataType.INTEGER, this, "");
+    public final TableField<ParametersRecord, Integer> ORGANISATION_ID = createField(DSL.name("organisation_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>public.parameters.user_id</code>.
      */
     public final TableField<ParametersRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.parameters.event_id</code>.
+     */
+    public final TableField<ParametersRecord, Integer> EVENT_ID = createField(DSL.name("event_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.parameters.parameter_name</code>.
@@ -178,7 +184,19 @@ public class Parameters extends TableImpl<ParametersRecord> {
 
     @Override
     public List<ForeignKey<ParametersRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.PARAMETERS__PARAMETERS_ORGANISATION_ID_FKEY, Keys.PARAMETERS__PARAMETERS_USER_ID_FKEY);
+        return Arrays.asList(Keys.PARAMETERS__PARAMETERS_EVENT_ID_FKEY, Keys.PARAMETERS__PARAMETERS_ORGANISATION_ID_FKEY, Keys.PARAMETERS__PARAMETERS_USER_ID_FKEY);
+    }
+
+    private transient EventPath _event;
+
+    /**
+     * Get the implicit join path to the <code>public.event</code> table.
+     */
+    public EventPath event() {
+        if (_event == null)
+            _event = new EventPath(this, Keys.PARAMETERS__PARAMETERS_EVENT_ID_FKEY, null);
+
+        return _event;
     }
 
     private transient OrganisationPath _organisation;

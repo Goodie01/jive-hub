@@ -1,8 +1,8 @@
 package nz.jive.hub.facade;
 
-import nz.jive.hub.Repository.UserRepository;
-import nz.jive.hub.Repository.UserSessionRepository;
 import nz.jive.hub.database.DatabaseService;
+import nz.jive.hub.database.Repository.UserRepository;
+import nz.jive.hub.database.Repository.UserSessionRepository;
 import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.database.generated.tables.records.UserDetailRecord;
 import nz.jive.hub.database.generated.tables.records.UserSessionRecord;

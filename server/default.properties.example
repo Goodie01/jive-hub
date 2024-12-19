@@ -1,2 +1,3 @@
 DATABASE_JDBC=jdbc:postgresql://localhost:5433/jive_hub?user=docker&password=docker&autoReconnect=true
 SERVER_PORT=8080
+JAVALIN_DEBUG_LOGGING=true

@@ -3,12 +3,15 @@ package nz.jive.hub.perf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 
 public class TimingResults extends ThreadLocal<Map<String, TimingResults.TimedInvocation>> {
     private static final TimingResults INSTANCE = new TimingResults();
     private static final Logger LOGGER = LoggerFactory.getLogger("Timing results");
+    private static final String TIME_FORMAT_PATTERN = "%11.2f ms";
+    private static final String TOTAL_CALL_LOG_MESSAGE = "Sum total: {0}ms; over: {1} calls";
 
     @Override
     protected Map<String, TimedInvocation> initialValue() {
@@ -31,7 +34,11 @@ public class TimingResults extends ThreadLocal<Map<String, TimingResults.TimedIn
         List<TimedInvocation> sortedInvocations = new ArrayList<>(get().values());
         Collections.sort(sortedInvocations);
 
+        long sum = sortedInvocations.stream().mapToLong(timedInvocation -> timedInvocation.dt).sum();
+        int count = sortedInvocations.stream().mapToInt(value -> value.calls).sum();
+
         sortedInvocations.forEach(timedInvocation -> LOGGER.info(timedInvocation.toString()));
+        LOGGER.info(MessageFormat.format(TOTAL_CALL_LOG_MESSAGE, sum / 1e6, count));
 
         get().clear();
     }
@@ -41,7 +48,6 @@ public class TimingResults extends ThreadLocal<Map<String, TimingResults.TimedIn
     }
 
     public static class TimedInvocation implements Comparable<TimedInvocation> {
-        private static final String TIME_FORMAT_PATTERN = "%11.2f ms";
         private final String method;
         private long dt;
         private int calls = 1;

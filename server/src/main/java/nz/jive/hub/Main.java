@@ -2,10 +2,11 @@ package nz.jive.hub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.javalin.Javalin;
-import nz.jive.hub.Repository.*;
 import nz.jive.hub.database.DatabaseService;
 import nz.jive.hub.database.Generator;
 import nz.jive.hub.database.Migrator;
+import nz.jive.hub.database.Repository.*;
+import nz.jive.hub.database.generated.tables.records.OrganisationRecord;
 import nz.jive.hub.facade.*;
 import nz.jive.hub.handlers.*;
 import nz.jive.hub.perf.TimingResults;
@@ -13,6 +14,9 @@ import nz.jive.hub.service.server.ServerService;
 import org.jooq.impl.DSL;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 import static nz.jive.hub.database.generated.Tables.ORGANISATION;
@@ -45,6 +49,7 @@ public class Main {
         UserSessionRepository userSessionRepository = new UserSessionRepository();
         SecurityRepository securityRepository = new SecurityRepository(objectMapper);
         HostsRepository hostsRepository = new HostsRepository();
+        EventsRepository eventsRepository = new EventsRepository();
 
         OrganisationFacade organisationFacade = new OrganisationFacade(
                 databaseService,
@@ -66,6 +71,11 @@ public class Main {
                 parameterStoreRepository,
                 pageRepository
         );
+        EventsFacade eventsFacade = new EventsFacade(
+                databaseService,
+                parameterStoreRepository,
+                eventsRepository
+        );
         SecurityFacade securityFacade = new SecurityFacade(
                 databaseService,
                 securityRepository,
@@ -80,10 +90,14 @@ public class Main {
                 .fetchOne(0, int.class);
 
         if (i == 0) {
-            organisationFacade.createOrganisation("This is a test",
+            OrganisationRecord organisationRecord = organisationFacade.createOrganisation("This is a test",
                     "Thomas Goodwin",
                     "Thomas",
                     "jive-hub.test@goodwin.geek.nz"
+            );
+            eventsFacade.createEvent(organisationRecord, "My test event", "Only the best",
+                    OffsetDateTime.of(LocalDateTime.of(2026, 3, 6, 17, 0, 0), ZoneOffset.ofHours(12)),
+                    OffsetDateTime.of(LocalDateTime.of(2026, 3, 8, 17, 0, 0), ZoneOffset.ofHours(12))
             );
         }
 
@@ -92,13 +106,17 @@ public class Main {
         new ServerService().setUp(() -> Javalin.create(javalinConfig -> {
                                     javalinConfig.useVirtualThreads = true;
                                     javalinConfig.showJavalinBanner = false;
+
+                                    if (JiveConfiguration.JAVALIN_DEBUG_LOGGING.booleanVal()) {
+                                        javalinConfig.bundledPlugins.enableDevLogging();
+                                    }
                                 })
                                 .before(ctx -> Server.setup(ctx, userSessionFacade, organisationFacade, securityFacade))
                                 .after(_ -> TimingResults.getInstance().dumpCurrent())
                 )
                 .get("api/health", new HealthCheckHandler(databaseService))
                 .post("api/v1/login", new LoginHandler(userSessionFacade))
-                .get("api/v1/home", new HomeHandler(menuFacade))
+                .get("api/v1/home", new HomeHandler(menuFacade, eventsFacade))
                 .get("api/v1/admin", new AdminQueryHandler(adminFacade))
                 .post("api/v1/admin", new AdminUpdateHandler(adminFacade))
                 .get("api/v1/pages/*", new PagesHandler(pageFacade))

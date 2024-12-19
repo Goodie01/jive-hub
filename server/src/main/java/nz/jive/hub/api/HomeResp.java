@@ -7,5 +7,6 @@ import java.util.SortedSet;
 /**
  * @author Goodie
  */
-public record HomeResp(String displayName, SortedSet<MenuItem> menuItems, User loggedInUser) {
+public record HomeResp(String displayName, SortedSet<MenuItem> menuItems, User loggedInUser,
+                       java.util.List<nz.jive.hub.api.domain.Event> events) {
 }
